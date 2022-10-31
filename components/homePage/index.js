@@ -7,7 +7,7 @@ function Home() {
         <Head>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" />
-            <link href="https://fonts.googleapis.com/css2?family=Poor+Story" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet" />
         </Head>
         <div className={styles.header}><h2>Yolofootball</h2></div>
         <div className={styles.content}>
