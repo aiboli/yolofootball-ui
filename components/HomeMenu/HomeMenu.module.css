@@ -1,0 +1,34 @@
+.listcontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  height: 100%;
+}
+
+.list {
+  width: 100px;
+  height: 100%;
+  text-decoration: none;
+  list-style-type: none;
+  text-align: center;
+  background-color: #0c1420;
+}
+
+.list a {
+  color: #fecb7a;
+  text-decoration: none;
+}
+
+.list:hover {
+  background-color: #fecb7a;
+  color: #0c1420;
+  transition: all 0.4s ease-in;
+}
+
+.list:hover a {
+  color: #0c1420;
+}

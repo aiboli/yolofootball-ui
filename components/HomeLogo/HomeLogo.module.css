@@ -1,0 +1,21 @@
+.homelogo {
+  padding: 0px 15px;
+  height: 80px;
+}
+
+.homelogolink {
+  height: 100%;
+  width: auto;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo {
+  height: 98%;
+  width: auto;
+}
+
+.title {
+  color: #fecb7a;
+}
