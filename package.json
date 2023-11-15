@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "next build && next export",
+    "build": "next builds",
     "start": "next start -p 3001",
     "lint": "next lint"
   },
