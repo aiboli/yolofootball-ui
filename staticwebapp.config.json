@@ -1,8 +1,0 @@
-{  
-    "engines": {
-        "node": ">=18.0.0"
-    },
-    "platform": {
-        "apiRuntime": "node:18"
-    }
-}
