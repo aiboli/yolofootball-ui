@@ -1,10 +1,10 @@
-import styles from "./HomePage.module.css";
+import styles from "./Home.module.css";
 import HomeLogo from "../HomeLogo";
 import Head from "next/head";
 import HomeMenu from "../HomeMenu";
 import LeagueMenu from "../LeagueMenu";
 
-function HomePage() {
+function Home() {
   return (
     <>
       <Head>
@@ -31,4 +31,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Home;
