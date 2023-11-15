@@ -12,5 +12,8 @@
     "build": "next build && next export",
     "start": "next start -p 3001",
     "lint": "next lint"
-  }
+  },
+  "engines": {
+    "node": ">=18.17.0"
+   }
 }
