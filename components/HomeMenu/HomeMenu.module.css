@@ -32,3 +32,10 @@
 .list:hover a {
   color: #0c1420;
 }
+
+@media only screen and (max-width: 600px) {
+  .list {
+    width: 62px;
+    height: 100%;
+  }
+}

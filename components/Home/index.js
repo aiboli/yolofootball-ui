@@ -26,7 +26,9 @@ function Home() {
         <div className={styles.games}>center dashboard</div>
         <div className={styles.dashboard}>right section</div>
       </div>
-      <div className={styles.footer}>footer</div>
+      <div className={styles.footer}>
+        <h5>®2023 Yolofootball.com. All rights reserved.</h5>
+      </div>
     </>
   );
 }
