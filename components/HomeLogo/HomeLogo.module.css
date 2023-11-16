@@ -19,3 +19,12 @@
 .title {
   color: #fecb7a;
 }
+
+@media only screen and (max-width: 600px) {
+  .logo {
+    height: 43%;
+  }
+  .homelogo {
+    padding: 0px 5px;
+  }
+}
