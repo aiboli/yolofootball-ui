@@ -3,3 +3,4 @@ DARK BLUE: #0C1420
 GREY: #444351
 YELLOW: #FECB7A
 Dark Yellow: #BB7A44
+Light Blue: #3f5473

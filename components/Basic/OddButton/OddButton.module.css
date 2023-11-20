@@ -1,0 +1,30 @@
+button.oddButton {
+  min-width: 33.3%;
+  height: 40px;
+  background-color: #0c1420;
+  color: #fecb7a;
+  text-decoration: none;
+  border: none;
+  border-top: 2px #0c1420 solid;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 250ms ease-in-out, transform 150ms ease;
+  transition: border-top 250ms ease-in-out, transform 150ms ease;
+}
+
+button.oddButton:hover,
+button.oddButton:focus {
+  background-color: #18253a;
+  border-top: 2px #fecb7a solid;
+}
+
+button.oddButton:active {
+  transform: scale(0.97);
+}
+
+.oddTitle {
+  color: white;
+}
+.oddNumber {
+  color: #fecb7a;
+}

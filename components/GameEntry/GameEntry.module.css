@@ -1,0 +1,46 @@
+.gameEntry {
+  background-color: #0c1420;
+  border-top: 5px solid #fecb7a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0px 0px 7px 0px;
+}
+.gameEntryTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 10px;
+}
+
+.gameEntrySubTitle {
+  display: flex;
+  align-items: center;
+  padding: 2px 10px;
+  background-color: #3f5473;
+}
+
+.gameDate {
+  font-size: 12px;
+}
+
+.gameEntryBody {
+  background-color: #3f5473;
+  padding: 0px 7px 10px 10px;
+}
+
+.gameOddButtonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gameOddButtonGroup button {
+  margin-right: 5px;
+}
+
+.gameOddButtonGroup button:last-child {
+  margin-right: 0px;
+}

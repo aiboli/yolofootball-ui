@@ -10,7 +10,7 @@
 .content {
   width: 100%;
   min-height: 100px;
-  background-color: #dfd0bb;
+  background-color: black;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -39,7 +39,7 @@
   height: 100%;
   width: 100%;
   min-width: 300px;
-  border: yellow 1px solid;
+  padding: 10px 7px;
 }
 
 .dashboard {
@@ -66,7 +66,6 @@
     height: 100%;
     width: 100%;
     min-width: 300px;
-    border: yellow 3px dotted;
     text-align: center;
   }
 }
