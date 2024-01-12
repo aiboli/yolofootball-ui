@@ -12,13 +12,18 @@ button.oddButton {
   transition: border-top 250ms ease-in-out, transform 150ms ease;
 }
 
-button.oddButton:hover,
-button.oddButton:focus {
+button.oddButton:hover {
   background-color: #18253a;
   border-top: 2px #fecb7a solid;
 }
 
-button.oddButton:active {
+button.oddButton:active  {
+  transform: scale(0.97);
+}
+
+button.oddButton.selected {
+  background-color: #18253a;
+  border-top: 2px #fecb7a solid;
   transform: scale(0.97);
 }
 

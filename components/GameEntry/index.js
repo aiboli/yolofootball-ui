@@ -1,7 +1,7 @@
 import OddButton from "../Basic/OddButton";
 import styles from "./GameEntry.module.css";
 
-function GameEntry({ home, away, odd, date }) {
+function GameEntry({ id, home, away, odd, date }) {
   return (
     <div className={styles.gameEntry}>
       <div className={styles.gameEntryTitle}>
@@ -22,9 +22,9 @@ function GameEntry({ home, away, odd, date }) {
       </div>
       <div className={styles.gameEntryBody}>
         <div className={styles.gameOddButtonGroup}>
-          <OddButton data={{ title: "Home", odd: odd.home }} />
-          <OddButton data={{ title: "Draw", odd: odd.draw }} />
-          <OddButton data={{ title: "Away", odd: odd.away }} />
+          <OddButton data={{ eventId: id, title: "Home", odd: odd.home }} />
+          <OddButton data={{ eventId: id, title: "Draw", odd: odd.draw }} />
+          <OddButton data={{ eventId: id, title: "Away", odd: odd.away }} />
         </div>
       </div>
     </div>

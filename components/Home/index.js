@@ -4,12 +4,14 @@ import Head from "next/head";
 import HomeMenu from "../HomeMenu";
 import LeagueMenu from "../LeagueMenu";
 import GameEntry from "../GameEntry";
+import HomeReceipt from "../HomeReceipt";
 
 function Home() {
   let entries = [
     {
       home: "Manchester City",
       away: "Manchester United",
+      id: "111111",
       odd: {
         home: "1.78",
         draw: "2.50",
@@ -19,6 +21,7 @@ function Home() {
     {
       home: "Newcastle United",
       away: "Chelsea",
+      id: "111112",
       odd: {
         home: "2.10",
         draw: "2.40",
@@ -28,6 +31,7 @@ function Home() {
     {
       home: "Arsenal",
       away: "Everton",
+      id: "111113",
       odd: {
         home: "1.50",
         draw: "2.70",
@@ -37,6 +41,7 @@ function Home() {
     {
       home: "Liverpool",
       away: "Stock City",
+      id: "111114",
       odd: {
         home: "1.10",
         draw: "3.70",
@@ -46,6 +51,7 @@ function Home() {
     {
       home: "Cystal Palace",
       away: "Totteham Hotspur",
+      id: "111115",
       odd: {
         home: "4.88",
         draw: "2.80",
@@ -56,7 +62,7 @@ function Home() {
 
   const entryComponent = entries.map((item) => {
     return (
-      <GameEntry home={item.home} away={item.away} odd={item.odd}></GameEntry>
+      <GameEntry id={item.id} home={item.home} away={item.away} odd={item.odd}></GameEntry>
     );
   });
 
@@ -79,7 +85,7 @@ function Home() {
       <div className={styles.content}>
         <LeagueMenu />
         <div className={styles.games}>{entryComponent}</div>
-        <div className={styles.dashboard}>right section</div>
+        <HomeReceipt />
       </div>
       <div className={styles.footer}>
         <h5>®2023 Yolofootball.com. All rights reserved.</h5>
