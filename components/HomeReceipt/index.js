@@ -1,6 +1,6 @@
 import styles from "./HomeReceipt.module.css";
 import { useContext, useState, useEffect } from "react";
-import AppContext from "../../pages/AppContext";
+import AppContext from "../../helper/AppContext";
 
 function HomeReceipt() {
   const { appContext, setAppContext } = useContext(AppContext);
