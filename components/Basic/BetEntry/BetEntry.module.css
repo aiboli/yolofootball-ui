@@ -1,0 +1,49 @@
+.betEntryTitle {
+  font-size: 12px;
+  font-weight: 200;
+  color: white;
+}
+
+.betEntrySide {
+  font-size: 14px;
+  font-weight: 200;
+  color: white;
+}
+
+.betEntry {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #0c1420;
+}
+
+.betEntryGameInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 5px 3px;
+}
+
+.betEntryInputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+}
+
+.betEntryOdd {
+  font-size: 14px;
+  font-weight: 200;
+  color: #fecb7a;
+  padding: 5px 20px;
+  border-right: 1px solid #fecb7a;
+  border-left: 1px solid #fecb7a;
+}
+
+.betEntryInput {
+  width: 50px;
+}

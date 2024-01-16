@@ -19,7 +19,7 @@ function OddButton({ data }) {
         if (selected) {
           setAppContext({
             ...appContext,
-            selectedEvents: []
+            selectedEvents: [],
           });
         } else {
           setAppContext({
@@ -29,9 +29,10 @@ function OddButton({ data }) {
                 eventId: data.eventId,
                 optionId: `${data.eventId}-${data.title}`,
                 title: data.title,
-                odd: data.odd
-              }
-            ]
+                odd: data.odd,
+                gameTitle: data.gameTitle,
+              },
+            ],
           });
           setSelected(true);
         }
