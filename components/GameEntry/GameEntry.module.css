@@ -44,3 +44,9 @@
 .gameOddButtonGroup button:last-child {
   margin-right: 0px;
 }
+
+.leagueLogo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}

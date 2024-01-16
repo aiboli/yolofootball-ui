@@ -1,27 +1,93 @@
 import styles from "./HomeReceipt.module.css";
 import { useContext, useState, useEffect } from "react";
 import AppContext from "../../helper/AppContext";
+import BetEntry from "../Basic/betEntry";
 
-function HomeReceipt() {
+function HomeReceipt({ isMobile }) {
   const { appContext, setAppContext } = useContext(AppContext);
   const hasActiveGameOdd = appContext.selectedEvents.length > 0;
   const activeGameOdd = hasActiveGameOdd && appContext.selectedEvents[0];
   let size = useWindowSize();
   let isCircleButton = size.width <= 600;
-  return hasActiveGameOdd ? (
+
+  const clickHandler = () => {
+    if (!hasActiveGameOdd) return;
+    setAppContext({
+      ...appContext,
+      showMobileOrder: !appContext.showMobileOrder,
+    });
+  };
+  if (isMobile) {
+    return (
+      <div className={styles.receiptContainerMobile}>
+        <div className={styles.receiptTitle}>
+          <h4>Bet Basket</h4>
+        </div>
+        <br />
+        <div className={styles.betContainer}>
+          <h4>
+            {!hasActiveGameOdd ? (
+              "your basket is empty"
+            ) : (
+              <BetEntry entry={activeGameOdd}></BetEntry>
+            )}
+          </h4>
+        </div>
+        <div className={styles.betSummary}>
+          <div className={styles.betSummaryTotal}>
+            <span className={styles.betSummaryTotalTitle}>{"bet: "}</span>
+            <span className={styles.betSummaryTotalNumber}>
+              {appContext.order.totalBet}
+            </span>
+          </div>
+          <div className={styles.betSummaryTotal}>
+            <span className={styles.betSummaryTotalTitle}>{"win: "}</span>
+            <span className={styles.betSummaryTotalNumberWin}>
+              {appContext.order.totalWin}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
     <div className={styles.receiptContainer}>
-      {isCircleButton && <h1>1</h1>}
+      {isCircleButton && (
+        <button className={styles.mobileButton} onClick={() => clickHandler()}>
+          {hasActiveGameOdd ? "📃" : "🛒"}
+        </button>
+      )}
       {!isCircleButton && (
         <div>
-          <h4>You have selected: </h4>
+          <div className={styles.receiptTitle}>
+            <h4>Bet Basket</h4>
+          </div>
           <br />
-          <p>{`${activeGameOdd.optionId} ${activeGameOdd.title}@${activeGameOdd.odd}`}</p>
+          <div className={styles.betContainer}>
+            <h4>
+              {!hasActiveGameOdd ? (
+                "your basket is empty"
+              ) : (
+                <BetEntry entry={activeGameOdd}></BetEntry>
+              )}
+            </h4>
+          </div>
+          <div className={styles.betSummary}>
+            <div className={styles.betSummaryTotal}>
+              <span className={styles.betSummaryTotalTitle}>{"bet: "}</span>
+              <span className={styles.betSummaryTotalNumber}>
+                {appContext.order.totalBet}
+              </span>
+            </div>
+            <div className={styles.betSummaryTotal}>
+              <span className={styles.betSummaryTotalTitle}>{"win: "}</span>
+              <span className={styles.betSummaryTotalNumberWin}>
+                {appContext.order.totalWin}
+              </span>
+            </div>
+          </div>
         </div>
       )}
-    </div>
-  ) : (
-    <div className={styles.receiptContainer}>
-      {isCircleButton && <h1>+</h1>}
     </div>
   );
 }
@@ -31,7 +97,7 @@ function useWindowSize() {
   // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
   const [windowSize, setWindowSize] = useState({
     width: undefined,
-    height: undefined
+    height: undefined,
   });
 
   useEffect(() => {
@@ -41,7 +107,7 @@ function useWindowSize() {
       // Set window width/height to state
       setWindowSize({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       });
     }
 

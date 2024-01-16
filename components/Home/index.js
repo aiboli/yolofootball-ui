@@ -5,66 +5,42 @@ import HomeMenu from "../HomeMenu";
 import LeagueMenu from "../LeagueMenu";
 import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
+import { useEffect, useState, useContext } from "react";
+import AppContext from "../../helper/AppContext";
 
 function Home() {
-  let entries = [
-    {
-      home: "Manchester City",
-      away: "Manchester United",
-      id: "111111",
-      odd: {
-        home: "1.78",
-        draw: "2.50",
-        away: "3.50",
-      },
-    },
-    {
-      home: "Newcastle United",
-      away: "Chelsea",
-      id: "111112",
-      odd: {
-        home: "2.10",
-        draw: "2.40",
-        away: "2.78",
-      },
-    },
-    {
-      home: "Arsenal",
-      away: "Everton",
-      id: "111113",
-      odd: {
-        home: "1.50",
-        draw: "2.70",
-        away: "4.50",
-      },
-    },
-    {
-      home: "Liverpool",
-      away: "Stock City",
-      id: "111114",
-      odd: {
-        home: "1.10",
-        draw: "3.70",
-        away: "5.50",
-      },
-    },
-    {
-      home: "Cystal Palace",
-      away: "Totteham Hotspur",
-      id: "111115",
-      odd: {
-        home: "4.88",
-        draw: "2.80",
-        away: "1.30",
-      },
-    },
-  ];
+  const [entries, setEntries] = useState([]);
+  const { appContext, setAppContext } = useContext(AppContext);
+  const showMobileOrder = appContext.showMobileOrder;
+  // getting current league fixture data
+  useEffect(() => {
+    fetch("https://service.yolofootball.com/api/data/prepareData", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setEntries(Object.values(data));
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
-  const entryComponent = entries.map((item) => {
-    return (
-      <GameEntry id={item.id} home={item.home} away={item.away} odd={item.odd}></GameEntry>
+  const entryComponent =
+    entries?.length > 0 ? (
+      entries?.map((item) => {
+        return (
+          <GameEntry
+            id={item.fixture?.id}
+            home={item.teams?.home?.name}
+            away={item.teams?.away?.name}
+            odd={item.odds}
+            fixture={item.fixture}
+            league={item.league}
+          ></GameEntry>
+        );
+      })
+    ) : (
+      <h5>No events found</h5>
     );
-  });
 
   return (
     <>
@@ -84,7 +60,10 @@ function Home() {
       </div>
       <div className={styles.content}>
         <LeagueMenu />
-        <div className={styles.games}>{entryComponent}</div>
+        <div className={styles.games}>
+          {showMobileOrder && <HomeReceipt isMobile={true} />}
+          {entryComponent}
+        </div>
         <HomeReceipt />
       </div>
       <div className={styles.footer}>

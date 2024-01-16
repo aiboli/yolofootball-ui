@@ -6,13 +6,18 @@ function App() {
   const [appContext, setAppContext] = useState({
     leagues: [],
     events: [],
-    selectedEvents: []
+    selectedEvents: [],
+    order: {
+      totalBet: 0,
+      totalWin: 0,
+    },
+    showMobileOrder: false,
   });
   return (
     <AppContext.Provider
       value={{
         appContext,
-        setAppContext
+        setAppContext,
       }}
     >
       <Home />
