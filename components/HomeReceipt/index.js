@@ -1,7 +1,7 @@
 import styles from "./HomeReceipt.module.css";
 import { useContext, useState, useEffect } from "react";
 import AppContext from "../../helper/AppContext";
-import BetEntry from "../Basic/betEntry";
+import BetEntry from "./Basic/betEntry";
 
 function HomeReceipt({ isMobile }) {
   const { appContext, setAppContext } = useContext(AppContext);
