@@ -17,6 +17,11 @@ function HomeReceipt({ isMobile }) {
       showMobileOrder: !appContext.showMobileOrder,
     });
   };
+
+  const submitHandler = () => {
+    if (!hasActiveGameOdd) return;
+  };
+
   if (isMobile) {
     return (
       <div className={styles.receiptContainerMobile}>
@@ -66,7 +71,7 @@ function HomeReceipt({ isMobile }) {
           <div className={styles.betContainer}>
             <h4>
               {!hasActiveGameOdd ? (
-                "your basket is empty"
+                <span>{"your basket is empty"}</span>
               ) : (
                 <BetEntry entry={activeGameOdd}></BetEntry>
               )}
@@ -85,6 +90,15 @@ function HomeReceipt({ isMobile }) {
                 {appContext.order.totalWin}
               </span>
             </div>
+          </div>
+          <div className={styles.betButtonContainer}>
+            <button
+              className={styles.betButton}
+              onClick={() => submitHandler()}
+              disabled={!hasActiveGameOdd}
+            >
+              {"submit"}
+            </button>
           </div>
         </div>
       )}

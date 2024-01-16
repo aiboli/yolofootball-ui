@@ -78,3 +78,38 @@
   color: #fecb7a;
   font-size: 28px;
 }
+
+.betButtonContainer {
+  padding: 5px 10px;
+}
+
+.betButton {
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  background-color: #fecb7a;
+  cursor: pointer;
+  height: 30px;
+  min-width: 100%;
+  transition: background-color 250ms ease-in-out, transform 150ms ease;
+}
+
+.betButton:hover {
+  background-color: #f7b64e;
+}
+
+.betButton:active {
+  transform: scale(0.97);
+}
+
+.betButton:disabled {
+  background-color: #ffe6be;
+  color: #3f5473;
+  cursor: not-allowed;
+}
+
+.betContainer span {
+  color: white;
+  font-size: 14px;
+  font-weight: 100;
+}

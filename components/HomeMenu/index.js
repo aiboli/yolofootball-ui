@@ -10,7 +10,7 @@ function HomeMenu() {
           </a>
         </li>
         <li className={styles.list}>
-          <a href="/">
+          <a href="/login">
             <h4>log in</h4>
           </a>
         </li>

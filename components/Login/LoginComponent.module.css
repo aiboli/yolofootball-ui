@@ -1,0 +1,41 @@
+.LoginComponentContainer {
+  width: 800px;
+  min-height: 600px;
+  background-color: #3f5473;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 30px auto;
+}
+
+.LoginComponentTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #0c1420;
+  color: white;
+  width: 100%;
+}
+
+.LoginComponentTitle h4 {
+  padding: 5px 10px;
+}
+
+.LoginComponentForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0px;
+  width: 100%;
+}
+
+.LoginComponentInputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0px;
+  width: 100%;
+}
