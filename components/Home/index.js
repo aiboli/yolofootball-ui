@@ -15,18 +15,18 @@ function Home() {
   // getting current league fixture data
   useEffect(() => {
     fetch("https://service.yolofootball.com/api/data/prepareData", {
-      method: "GET",
+      method: "GET"
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setEntries(Object.values(data));
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   }, []);
 
   const entryComponent =
     entries?.length > 0 ? (
-      entries?.map((item) => {
+      entries?.map(item => {
         return (
           <GameEntry
             id={item.fixture?.id}
@@ -45,6 +45,11 @@ function Home() {
   return (
     <>
       <Head>
+        <title>yolofootball</title>
+        <meta
+          name="description"
+          content="yolofootball home page, here to start your amazing football betting journey"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
