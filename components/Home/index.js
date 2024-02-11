@@ -19,7 +19,11 @@ function Home() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setEntries(Object.values(data));
+        let entryData = Object.values(data);
+        entryData = entryData.filter(
+          (item) => new Date(item.fixture?.date) >= new Date()
+        );
+        setEntries(Object.values(entryData));
       })
       .catch((error) => console.log(error));
   }, []);
