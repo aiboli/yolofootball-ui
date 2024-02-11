@@ -15,9 +15,8 @@ function Home() {
   // getting current league fixture data
   useEffect(() => {
     fetch("https://service.yolofootball.com/api/data/prepareData", {
-      method: "GET"
+      method: "GET",
     })
-<<<<<<< HEAD
       .then((response) => response.json())
       .then((data) => {
         let entryData = Object.values(data);
@@ -25,18 +24,13 @@ function Home() {
           (item) => new Date(item.fixture?.date) >= new Date()
         );
         setEntries(Object.values(entryData));
-=======
-      .then(response => response.json())
-      .then(data => {
-        setEntries(Object.values(data));
->>>>>>> 1ca2b202a4e1e6007b23cddf8d35de8dc0cf27b4
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }, []);
 
   const entryComponent =
     entries?.length > 0 ? (
-      entries?.map(item => {
+      entries?.map((item) => {
         return (
           <GameEntry
             id={item.fixture?.id}
