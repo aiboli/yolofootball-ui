@@ -4,12 +4,16 @@ import styles from "./LoginComponent.module.css";
 const LoginComponent = () => {
   async function onSubmit(event) {
     event.preventDefault();
-
+    console.log(event.currentTarget);
     const formData = new FormData(event.currentTarget);
+    console.log(formData);
     await fetch("https://service.yolofootball.com/api/users/signin", {
       method: "POST",
       body: formData,
       redirect: "follow",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => {
         // HTTP 301 response
