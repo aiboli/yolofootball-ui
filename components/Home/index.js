@@ -60,6 +60,11 @@ function Home() {
           href="https://fonts.googleapis.com/css2?family=Roboto"
           rel="stylesheet"
         />
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="./assets/logo/favicon.ico"
+        ></link>
       </Head>
       <div className={styles.header}>
         <nav className={styles.navbar}>
