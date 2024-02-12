@@ -2,16 +2,30 @@ import React from "react";
 import styles from "./LoginComponent.module.css";
 
 const LoginComponent = () => {
+  async function onSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    await fetch("https://service.yolofootball.com/api/users/signin", {
+      method: "POST",
+      body: formData,
+      redirect: "follow",
+    })
+      .then((response) => {
+        // HTTP 301 response
+        console.log(response);
+      })
+      .catch(function (err) {
+        // console.info(err + " url: " + url);
+      });
+  }
   return (
     <div className={styles.LoginComponentContainer}>
       <div className={styles.LoginComponentTitle}>
         <h4>Login</h4>
       </div>
       <div className={styles.LoginComponentForm}>
-        <form
-          action="https://service.yolofootball.com/api/users/signin"
-          method="POST"
-        >
+        <form onSubmit={onSubmit}>
           <div className={styles.LoginComponentInputContainer}>
             <input
               type="text"
