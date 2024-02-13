@@ -1,27 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./LoginComponent.module.css";
 
 const LoginComponent = () => {
-  async function onSubmit(event) {
+  let [userName, setUserName] = useState("");
+  let [password, setPassword] = useState("");
+  let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
+
+  async function onSubmit() {
     event.preventDefault();
-    console.log(event.currentTarget);
-    const formData = new FormData(event.currentTarget);
-    console.log(formData);
-    await fetch("https://service.yolofootball.com/api/users/signin", {
-      method: "POST",
-      body: formData,
-      redirect: "follow",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        // HTTP 301 response
-        console.log(response);
-      })
-      .catch(function (err) {
-        // console.info(err + " url: " + url);
-      });
+    const res = await fetch(
+      "https://service.yolofootball.com/api/users/signin",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          user_name: userName,
+          user_password: password,
+          redirect_to: redirectUrl,
+        }),
+        redirect: "follow",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+      }
+    );
+    const data = await res.json();
+    if (data.message === "succeed") {
+      window.location.href = data.redirectURL;
+    }
   }
   return (
     <div className={styles.LoginComponentContainer}>
@@ -36,12 +42,18 @@ const LoginComponent = () => {
               id="username"
               name="user_name"
               placeholder="Username"
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
             />
             <input
               type="password"
               id="password"
               name="user_password"
               placeholder="Password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <input
               type="hidden"
