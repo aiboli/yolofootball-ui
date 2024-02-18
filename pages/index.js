@@ -12,6 +12,7 @@ function App() {
       totalWin: 0,
     },
     showMobileOrder: false,
+    userProfile: undefined,
   });
   return (
     <AppContext.Provider

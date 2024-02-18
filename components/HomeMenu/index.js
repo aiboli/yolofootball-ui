@@ -1,5 +1,6 @@
 import styles from "./HomeMenu.module.css";
 import AppContext from "../../helper/AppContext";
+import { useContext } from "react";
 
 function HomeMenu() {
   const { appContext, setAppContext } = useContext(AppContext);
