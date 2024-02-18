@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { setCookie } from "../../helper/cookieHelper";
+import AppContext from "../../helper/AppContext";
 import styles from "./LoginComponent.module.css";
 
 const LoginComponent = () => {
   let [userName, setUserName] = useState("");
   let [password, setPassword] = useState("");
   let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
+  const { appContext, setAppContext } = useContext(AppContext);
 
   async function onSubmit() {
     event.preventDefault();
@@ -29,6 +31,10 @@ const LoginComponent = () => {
     if (data.message === "succeed") {
       window.location.href = data.redirectURL;
       setCookie("access_token", data.accessToken, 7);
+      setAppContext({
+        ...appContext,
+        userProfile: data.userProfile,
+      });
     }
   }
   return (
