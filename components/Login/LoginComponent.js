@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { cookies } from "next/headers";
 import styles from "./LoginComponent.module.css";
 
 const LoginComponent = () => {
@@ -27,6 +28,7 @@ const LoginComponent = () => {
     const data = await res.json();
     if (data.message === "succeed") {
       window.location.href = data.redirectURL;
+      cookies().set("access_token", "data.accessToken");
     }
   }
   return (
