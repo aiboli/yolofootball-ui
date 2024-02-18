@@ -1,28 +1,11 @@
 import Home from "../components/Home";
-import { useState } from "react";
-import AppContext from "../helper/AppContext";
+import AppContextProvider from "../helper/AppContextProvider";
 
 function App() {
-  const [appContext, setAppContext] = useState({
-    leagues: [],
-    events: [],
-    selectedEvents: [],
-    order: {
-      totalBet: 0,
-      totalWin: 0,
-    },
-    showMobileOrder: false,
-    userProfile: undefined,
-  });
   return (
-    <AppContext.Provider
-      value={{
-        appContext,
-        setAppContext,
-      }}
-    >
+    <AppContextProvider>
       <Home />
-    </AppContext.Provider>
+    </AppContextProvider>
   );
 }
 
