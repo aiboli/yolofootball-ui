@@ -28,7 +28,12 @@ const LoginComponent = () => {
     const data = await res.json();
     if (data.message === "succeed") {
       window.location.href = data.redirectURL;
-      cookies().set("access_token", "data.accessToken");
+      cookies().set({
+        name: "access_token",
+        value: data.accessToken,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      });
     }
   }
   return (
