@@ -21,12 +21,10 @@ const LoginComponent = () => {
           user_password: password,
           redirect_to: redirectUrl,
         }),
-        redirect: "follow",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "same-origin",
-        mode: "no-cors",
       }
     );
     const data = await res.json();
