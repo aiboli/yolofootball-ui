@@ -16,6 +16,7 @@ function Home() {
   useEffect(() => {
     fetch("https://service.yolofootball.com/api/data/prepareData", {
       method: "GET",
+      mode: "no-cors",
     })
       .then((response) => response.json())
       .then((data) => {

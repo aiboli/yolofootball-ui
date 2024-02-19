@@ -25,6 +25,7 @@ export default function AppContextProvider({ children }) {
               "Content-Type": "application/json",
             },
             credentials: "same-origin",
+            mode: "no-cors",
           }
         );
         const data = await res.json();
