@@ -1,9 +1,11 @@
 import styles from "./HomeMenu.module.css";
 import AppContext from "../../helper/AppContext";
 import { useContext } from "react";
+import { useRouter } from "next/navigation";
 
 function HomeMenu() {
   const { appContext, setAppContext } = useContext(AppContext);
+  const route = useRouter();
   return (
     <div className={styles.homemenu}>
       <ul className={styles.listcontainer}>
@@ -21,7 +23,7 @@ function HomeMenu() {
         )}
         {!appContext.userProfile && (
           <li className={styles.list}>
-            <a href="/login">
+            <a href="#" onClick={() => route.push("/login")}>
               <h4>log in</h4>
             </a>
           </li>

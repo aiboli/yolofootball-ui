@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./LoginComponent.module.css";
+import { redirect } from "next/navigation";
 
 const LoginComponent = () => {
   let [userName, setUserName] = useState("");
@@ -29,12 +30,12 @@ const LoginComponent = () => {
     );
     const data = await res.json();
     if (data.message === "succeed") {
-      window.location.href = data.redirectURL;
       setCookie("access_token", data.accessToken, 7);
       setAppContext({
         ...appContext,
         userProfile: data.userProfile,
       });
+      redirect("/");
     }
   }
   return (
