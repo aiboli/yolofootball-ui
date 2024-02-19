@@ -41,7 +41,7 @@ export default function AppContextProvider({ children }) {
         }
       }
     }
-    checkAuth();
+    //checkAuth();
     //check local token or something
   }, []);
 
