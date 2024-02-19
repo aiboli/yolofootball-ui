@@ -2,13 +2,14 @@ import React, { useState, useContext } from "react";
 import { setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./LoginComponent.module.css";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const LoginComponent = () => {
   let [userName, setUserName] = useState("");
   let [password, setPassword] = useState("");
   let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
   const { appContext, setAppContext } = useContext(AppContext);
+  const { push } = useRouter();
 
   async function onSubmit() {
     event.preventDefault();
@@ -19,12 +20,12 @@ const LoginComponent = () => {
         body: JSON.stringify({
           user_name: userName,
           user_password: password,
-          redirect_to: redirectUrl,
+          redirect_to: redirectUrl
         }),
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        credentials: "same-origin",
+        credentials: "same-origin"
       }
     );
     const data = await res.json();
@@ -32,9 +33,9 @@ const LoginComponent = () => {
       setCookie("access_token", data.accessToken, 7);
       setAppContext({
         ...appContext,
-        userProfile: data.userProfile,
+        userProfile: data.userProfile
       });
-      redirect("/");
+      push("/");
     }
   }
   return (
@@ -50,7 +51,7 @@ const LoginComponent = () => {
               id="username"
               name="user_name"
               placeholder="Username"
-              onChange={(e) => {
+              onChange={e => {
                 setUserName(e.target.value);
               }}
             />
@@ -59,7 +60,7 @@ const LoginComponent = () => {
               id="password"
               name="user_password"
               placeholder="Password"
-              onChange={(e) => {
+              onChange={e => {
                 setPassword(e.target.value);
               }}
             />

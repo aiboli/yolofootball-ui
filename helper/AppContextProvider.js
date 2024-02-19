@@ -8,10 +8,10 @@ export default function AppContextProvider({ children }) {
     selectedEvents: [],
     order: {
       totalBet: 0,
-      totalWin: 0,
+      totalWin: 0
     },
     showMobileOrder: false,
-    userProfile: undefined,
+    userProfile: undefined
   });
 
   useLayoutEffect(() => {
@@ -21,19 +21,23 @@ export default function AppContextProvider({ children }) {
           "https://service.yolofootball.com/api/users/profile",
           {
             method: "GET",
+            headers: {
+              Authorization: `${getCookie("access_token")}`
+            }
           }
         );
         const data = await res.json();
         if (data && data.message === "unauth") {
           return;
         } else if (data && data.message === "succeed") {
+          console.log(data);
           setAppContext({
             ...appContext,
             userProfile: {
               userName: data.userProfile.userName,
               userEmail: data.userProfile.userEmail,
-              userId: data.userProfile.userId,
-            },
+              userId: data.userProfile.userId
+            }
           });
           return;
         } else {
@@ -41,7 +45,7 @@ export default function AppContextProvider({ children }) {
         }
       }
     }
-    //checkAuth();
+    checkAuth();
     //check local token or something
   }, []);
 
