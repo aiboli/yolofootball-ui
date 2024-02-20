@@ -20,12 +20,12 @@ const LoginComponent = () => {
         body: JSON.stringify({
           user_name: userName,
           user_password: password,
-          redirect_to: redirectUrl
+          redirect_to: redirectUrl,
         }),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        credentials: "same-origin"
+        credentials: "same-origin",
       }
     );
     const data = await res.json();
@@ -33,9 +33,11 @@ const LoginComponent = () => {
       setCookie("access_token", data.accessToken, 7);
       setAppContext({
         ...appContext,
-        userProfile: data.userProfile
+        userProfile: data.userProfile,
       });
       push("/");
+    } else {
+      alert("user or password is wrong");
     }
   }
   return (
@@ -51,7 +53,7 @@ const LoginComponent = () => {
               id="username"
               name="user_name"
               placeholder="Username"
-              onChange={e => {
+              onChange={(e) => {
                 setUserName(e.target.value);
               }}
             />
@@ -60,7 +62,7 @@ const LoginComponent = () => {
               id="password"
               name="user_password"
               placeholder="Password"
-              onChange={e => {
+              onChange={(e) => {
                 setPassword(e.target.value);
               }}
             />

@@ -11,6 +11,7 @@ import Loader from "../Loader";
 
 function Home() {
   const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { appContext, setAppContext } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
   // getting current league fixture data
@@ -29,17 +30,13 @@ function Home() {
           (item) => new Date(item.fixture?.date) >= new Date()
         );
         setEntries(Object.values(entryData));
-        setAppContext({
-          ...appContext,
-          isBusy: false,
-        });
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setAppContext({
-          ...appContext,
-          isBusy: false,
-        });
+      })
+      .then(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -48,6 +45,7 @@ function Home() {
       entries?.map((item) => {
         return (
           <GameEntry
+            key={item.fixture?.id}
             id={item.fixture?.id}
             home={item.teams?.home?.name}
             away={item.teams?.away?.name}
@@ -90,11 +88,9 @@ function Home() {
       <div className={styles.content}>
         <LeagueMenu />
         <div className={styles.games}>
-          {appContext.isBusy && <Loader />}
-          {!appContext.isBusy && showMobileOrder && (
-            <HomeReceipt isMobile={true} />
-          )}
-          {!appContext.isBusy && entryComponent}
+          {loading && <Loader />}
+          {!loading && showMobileOrder && <HomeReceipt isMobile={true} />}
+          {!loading && entryComponent}
         </div>
         <HomeReceipt />
       </div>
