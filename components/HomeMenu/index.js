@@ -2,6 +2,7 @@ import styles from "./HomeMenu.module.css";
 import AppContext from "../../helper/AppContext";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
+import { setCookie } from "../../helper/cookieHelper";
 
 function HomeMenu() {
   const { appContext, setAppContext } = useContext(AppContext);
@@ -18,6 +19,19 @@ function HomeMenu() {
           <li className={`${styles.list} ${styles.username}`}>
             <a href="/user">
               <h4>{appContext.userProfile.userName}</h4>
+            </a>
+          </li>
+        )}
+        {appContext.userProfile && appContext.userProfile.userName && (
+          <li className={`${styles.list} ${styles.username}`}>
+            <a
+              href="#"
+              onClick={() => {
+                setCookie("access_token", "", 0);
+                window.location.href = "/";
+              }}
+            >
+              <h4>{"sign out"}</h4>
             </a>
           </li>
         )}
