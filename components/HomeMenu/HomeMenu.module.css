@@ -23,6 +23,10 @@
   text-decoration: none;
 }
 
+.list.username {
+  margin: 20px;
+}
+
 .list:hover {
   background-color: #fecb7a;
   color: #0c1420;
@@ -37,5 +41,8 @@
   .list {
     width: 62px;
     height: 100%;
+  }
+  .list.username {
+    width: unset;
   }
 }

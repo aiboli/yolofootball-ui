@@ -15,7 +15,7 @@ function HomeMenu() {
           </a>
         </li>
         {appContext.userProfile && appContext.userProfile.userName && (
-          <li className={styles.list}>
+          <li className={`${styles.list} ${styles.username}`}>
             <a href="/user">
               <h4>{appContext.userProfile.userName}</h4>
             </a>
@@ -30,7 +30,7 @@ function HomeMenu() {
         )}
         {!appContext.userProfile && (
           <li className={styles.list}>
-            <a href="/">
+            <a href="#" onClick={() => route.push("/signup")}>
               <h4>sign up</h4>
             </a>
           </li>
