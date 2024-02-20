@@ -40,6 +40,8 @@ const SignupComponent = () => {
         userProfile: data.userProfile,
       });
       push("/");
+    } else {
+      alert("account has been registered");
     }
   }
   return (
