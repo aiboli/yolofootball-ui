@@ -8,10 +8,11 @@ export default function AppContextProvider({ children }) {
     selectedEvents: [],
     order: {
       totalBet: 0,
-      totalWin: 0
+      totalWin: 0,
     },
     showMobileOrder: false,
-    userProfile: undefined
+    userProfile: undefined,
+    isBusy: false,
   });
 
   useLayoutEffect(() => {
@@ -22,8 +23,8 @@ export default function AppContextProvider({ children }) {
           {
             method: "GET",
             headers: {
-              Authorization: `${getCookie("access_token")}`
-            }
+              Authorization: `${getCookie("access_token")}`,
+            },
           }
         );
         const data = await res.json();
@@ -36,8 +37,8 @@ export default function AppContextProvider({ children }) {
             userProfile: {
               userName: data.userProfile.userName,
               userEmail: data.userProfile.userEmail,
-              userId: data.userProfile.userId
-            }
+              userId: data.userProfile.userId,
+            },
           });
           return;
         } else {

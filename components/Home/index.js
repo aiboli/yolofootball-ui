@@ -7,6 +7,7 @@ import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
 import { useEffect, useState, useContext } from "react";
 import AppContext from "../../helper/AppContext";
+import Loader from "../Loader";
 
 function Home() {
   const [entries, setEntries] = useState([]);
@@ -14,6 +15,10 @@ function Home() {
   const showMobileOrder = appContext.showMobileOrder;
   // getting current league fixture data
   useEffect(() => {
+    setAppContext({
+      ...appContext,
+      isBusy: true,
+    });
     fetch("https://service.yolofootball.com/api/data/prepareData", {
       method: "GET",
     })
@@ -24,8 +29,18 @@ function Home() {
           (item) => new Date(item.fixture?.date) >= new Date()
         );
         setEntries(Object.values(entryData));
+        setAppContext({
+          ...appContext,
+          isBusy: false,
+        });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setAppContext({
+          ...appContext,
+          isBusy: false,
+        });
+      });
   }, []);
 
   const entryComponent =
@@ -75,8 +90,11 @@ function Home() {
       <div className={styles.content}>
         <LeagueMenu />
         <div className={styles.games}>
-          {showMobileOrder && <HomeReceipt isMobile={true} />}
-          {entryComponent}
+          {appContext.isBusy && <Loader />}
+          {!appContext.isBusy && showMobileOrder && (
+            <HomeReceipt isMobile={true} />
+          )}
+          {!appContext.isBusy && entryComponent}
         </div>
         <HomeReceipt />
       </div>
