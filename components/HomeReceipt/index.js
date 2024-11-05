@@ -2,6 +2,7 @@ import styles from "./HomeReceipt.module.css";
 import { useContext, useState, useEffect } from "react";
 import AppContext from "../../helper/AppContext";
 import BetEntry from "../Basic/BetEntry";
+import { getCookie } from "../../helper/cookieHelper";
 
 function HomeReceipt({ isMobile }) {
   const { appContext, setAppContext } = useContext(AppContext);
@@ -18,8 +19,49 @@ function HomeReceipt({ isMobile }) {
     });
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     if (!hasActiveGameOdd) return;
+    console.log(appContext);
+    let bet_result = -1;
+    if (appContext.selectedEvents[0].title.toLowerCase() === "home") {
+      bet_result = 0;
+    } else if (appContext.selectedEvents[0].title.toLowerCase() === "away") {
+      bet_result = 2;
+    } else {
+      bet_result = 1;
+    }
+    console.log(
+      JSON.stringify({
+        fixture_id: appContext.selectedEvents[0].eventId,
+        bet_result: bet_result,
+        odd_mount: appContext.order.totalBet,
+        odd_rate: appContext.selectedEvents[0].odd,
+        win_return: appContext.order.totalWin,
+        fixture_state: "notstarted",
+        user_name: appContext.userProfile.userName,
+      })
+    );
+    const res = await fetch("https://service.yolofootball.com/api/orders", {
+      method: "POST",
+      body: JSON.stringify({
+        fixture_id: appContext.selectedEvents[0].eventId,
+        bet_result: bet_result,
+        odd_mount: appContext.order.totalBet,
+        fixture_state: "notstarted",
+        user_name: appContext.userProfile.userName,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `${getCookie("access_token")}`,
+      },
+      credentials: "same-origin",
+    });
+    const data = await res.json();
+    if (!!data.orderdate) {
+      alert("order is created");
+    } else {
+      alert("order is failed to create");
+    }
   };
 
   if (isMobile) {

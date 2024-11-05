@@ -72,7 +72,9 @@ const LoginComponent = () => {
               value="https://www.yolofootball.com/"
             />
           </div>
-          <input type="submit" value="Login" />
+          <button type="submit" className={styles.LoginComponentButton}>
+            Login
+          </button>
         </form>
       </div>
     </div>

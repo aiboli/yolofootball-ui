@@ -39,3 +39,30 @@
   padding: 5px 0px;
   width: 100%;
 }
+
+.LoginComponentInputContainer input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.LoginComponentInputContainer input:focus {
+  border-color: #0070f3; /* Update to theme color */
+}
+
+.LoginComponentButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #0c1420; /* Update to theme color */
+  color: #fecb7a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.LoginComponentButton:hover {
+  background-color: #fecb7a; /* Update to theme color */
+  color: #0c1420;
+}
