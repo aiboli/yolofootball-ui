@@ -1,0 +1,52 @@
+.userOrderContainer {
+  height: 100%;
+  width: 450px;
+  background-color: #3f5473;
+  border-top: 5px solid #fecb7a;
+  margin: 10px 1px;
+  min-height: 400px;
+}
+
+.userOrderContainerMobile {
+  width: 100%;
+  background-color: #3f5473;
+  border-top: 5px solid #fecb7a;
+  margin: 10px 1px;
+  min-height: 200px;
+}
+
+@media only screen and (max-width: 600px) {
+  .userOrderContainer {
+    position: fixed;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    bottom: 20%;
+    right: 20%;
+    border: #fecb7a 3px solid;
+    background-color: #3f5473;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: space-around;
+    min-height: unset;
+  }
+
+  .userOrderContainer h1 {
+    color: #fecb7a;
+  }
+}
+
+.userOrderTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #0c1420;
+  color: white;
+  padding: 5px 10px;
+}
+
+.userOrderList {
+  padding: 5px 10px;
+}

@@ -47,6 +47,8 @@ function HomeReceipt({ isMobile }) {
         fixture_id: appContext.selectedEvents[0].eventId,
         bet_result: bet_result,
         odd_mount: appContext.order.totalBet,
+        odd_rate: appContext.selectedEvents[0].odd,
+        win_return: appContext.order.totalWin,
         fixture_state: "notstarted",
         user_name: appContext.userProfile.userName,
       }),

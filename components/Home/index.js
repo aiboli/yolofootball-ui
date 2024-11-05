@@ -5,6 +5,7 @@ import HomeMenu from "../HomeMenu";
 import LeagueMenu from "../LeagueMenu";
 import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
+import HomeOrder from "../HomeOrder";
 import { useEffect, useState, useContext } from "react";
 import AppContext from "../../helper/AppContext";
 import Loader from "../Loader";
@@ -13,6 +14,10 @@ function Home() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const { appContext, setAppContext } = useContext(AppContext);
+  const [order, setOrder] = useState([
+    { name: "Item 1", quantity: 2, price: 10.0 },
+    { name: "Item 2", quantity: 1, price: 20.0 },
+  ]);
   const showMobileOrder = appContext.showMobileOrder;
   // getting current league fixture data
   useEffect(() => {
@@ -92,7 +97,10 @@ function Home() {
           {!loading && showMobileOrder && <HomeReceipt isMobile={true} />}
           {!loading && entryComponent}
         </div>
-        <HomeReceipt />
+        <div>
+          <HomeReceipt />
+          <HomeOrder order={order} />
+        </div>
       </div>
       <div className={styles.footer}>
         <h5>®2023 Yolofootball.com. All rights reserved.</h5>
