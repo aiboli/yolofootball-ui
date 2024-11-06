@@ -38,9 +38,9 @@ export default function AppContextProvider({ children }) {
               userName: data.userProfile.userName,
               userEmail: data.userProfile.userEmail,
               userId: data.userProfile.userId,
-              userOrderIds: data.userProfile.order_ids,
-              userCreatedBidIds: data.userProfile.created_bid_ids,
-              userBalance: data.userProfile.account_balance,
+              userOrderIds: data.userProfile.userOrderIds,
+              userCreatedBidIds: data.userProfile.userCreatedBidIds,
+              userBalance: data.userProfile.userBalance,
             },
           });
           return;
