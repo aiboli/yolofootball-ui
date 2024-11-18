@@ -50,3 +50,47 @@
 .userOrderList {
   padding: 5px 10px;
 }
+
+.userOrderContainer {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.userOrderTitle {
+  font-size: 18px;
+}
+
+.userOrderItem {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.userOrderItemLeft {
+  display: flex;
+  align-items: center;
+}
+
+.userOrderItemImg {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.userOrderItem h5 {
+  margin: 0;
+  font-size: 16px;
+  color: #ddd;
+}
+
+.userOrderItem p {
+  margin: 0;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.userOrderWin {
+  color: #fecb7a;
+}

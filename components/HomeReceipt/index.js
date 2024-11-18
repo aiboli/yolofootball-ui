@@ -61,6 +61,10 @@ function HomeReceipt({ isMobile }) {
     const data = await res.json();
     if (!!data.orderdate) {
       alert("order is created");
+      setAppContext({
+        ...appContext,
+        selectedEvents: [],
+      });
     } else {
       alert("order is failed to create");
     }
