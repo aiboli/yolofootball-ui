@@ -39,3 +39,74 @@
   padding: 5px 0px;
   width: 100%;
 }
+
+.SignupComponentInputContainer input {
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #0c1420;
+  border-radius: 0;
+  background-color: #0c1420;
+  color: white;
+  font-family: "Roboto", serif;
+}
+
+.SignupComponentInputContainer input::placeholder {
+  color: white;
+  opacity: 0.7;
+}
+
+.SignupComponentInputContainer input:focus {
+  border-color: #fecb7a;
+  outline: none;
+  background-color: #18253a;
+}
+
+.SignupComponentInputGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.SignupComponentLabel {
+  color: #fecb7a;
+  font-family: "Roboto", serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  text-align: left;
+}
+
+.SignupComponentButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #0c1420; /* Update to theme color */
+  color: #fecb7a;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: "Roboto", serif;
+}
+
+.SignupComponentButton:hover {
+  background-color: #fecb7a; /* Update to theme color */
+  color: #0c1420;
+}
+
+.SignupComponentButtonDisabled {
+  background-color: #666 !important;
+  color: #ccc !important;
+  cursor: not-allowed !important;
+}
+
+.SignupComponentButtonDisabled:hover {
+  background-color: #666 !important;
+  color: #ccc !important;
+}
+
+.SignupComponentError {
+  color: #ff4444;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}

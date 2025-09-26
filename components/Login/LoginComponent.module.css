@@ -41,15 +41,24 @@
 }
 
 .LoginComponentInputContainer input {
-  width: 100%;
   padding: 10px;
   margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #0c1420;
+  border-radius: 0;
+  background-color: #0c1420;
+  color: white;
+  font-family: "Roboto", serif;
+}
+
+.LoginComponentInputContainer input::placeholder {
+  color: white;
+  opacity: 0.7;
 }
 
 .LoginComponentInputContainer input:focus {
-  border-color: #0070f3; /* Update to theme color */
+  border-color: #fecb7a;
+  outline: none;
+  background-color: #18253a;
 }
 
 .LoginComponentButton {
@@ -58,8 +67,10 @@
   background-color: #0c1420; /* Update to theme color */
   color: #fecb7a;
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
+  box-sizing: border-box;
+  font-family: "Roboto", serif;
 }
 
 .LoginComponentButton:hover {

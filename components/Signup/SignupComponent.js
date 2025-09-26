@@ -8,10 +8,15 @@ const SignupComponent = () => {
   let [userName, setUserName] = useState("");
   let [userEmail, setUserEmail] = useState("");
   let [password, setPassword] = useState("");
+  let [confirmPassword, setConfirmPassword] = useState("");
   let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
   const { appContext, setAppContext } = useContext(AppContext);
   const { push } = useRouter();
   console.log(encodeURIComponent(userEmail));
+
+  const passwordsMatch = password === confirmPassword && password !== "";
+  const isFormValid =
+    userName && userEmail && password && confirmPassword && passwordsMatch;
 
   async function onSubmitSignup() {
     event.preventDefault();
@@ -52,40 +57,88 @@ const SignupComponent = () => {
       <div className={styles.SignupComponentForm}>
         <form onSubmit={onSubmitSignup}>
           <div className={styles.SignupComponentInputContainer}>
-            <input
-              type="text"
-              id="username"
-              name="user_name"
-              placeholder="Username"
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-            />
-            <input
-              type="email"
-              id="useremail"
-              name="user_email"
-              placeholder="UserEmail"
-              onChange={(e) => {
-                setUserEmail(e.target.value);
-              }}
-            />
-            <input
-              type="password"
-              id="password"
-              name="user_password"
-              placeholder="Password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
+            <div className={styles.SignupComponentInputGroup}>
+              <label htmlFor="username" className={styles.SignupComponentLabel}>
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="user_name"
+                placeholder="Enter your username"
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                }}
+              />
+            </div>
+            <div className={styles.SignupComponentInputGroup}>
+              <label
+                htmlFor="useremail"
+                className={styles.SignupComponentLabel}
+              >
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="useremail"
+                name="user_email"
+                placeholder="Enter your email address"
+                onChange={(e) => {
+                  setUserEmail(e.target.value);
+                }}
+              />
+            </div>
+            <div className={styles.SignupComponentInputGroup}>
+              <label htmlFor="password" className={styles.SignupComponentLabel}>
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="user_password"
+                placeholder="Enter your password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </div>
+            <div className={styles.SignupComponentInputGroup}>
+              <label
+                htmlFor="confirmPassword"
+                className={styles.SignupComponentLabel}
+              >
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirm_password"
+                placeholder="Confirm your password"
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
+              />
+            </div>
             <input
               type="hidden"
               name="redirect_to"
               value="https://www.yolofootball.com/"
             />
+            {!passwordsMatch && password !== "" && confirmPassword !== "" && (
+              <div className={styles.SignupComponentError}>
+                Passwords do not match
+              </div>
+            )}
+            <button
+              type="submit"
+              className={`${styles.SignupComponentButton} ${
+                !isFormValid ? styles.SignupComponentButtonDisabled : ""
+              }`}
+              disabled={!isFormValid}
+            >
+              Signup
+            </button>
           </div>
-          <input type="submit" value="Signup" />
         </form>
       </div>
     </div>
