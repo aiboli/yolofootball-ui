@@ -1,17 +1,37 @@
 import styles from "./HomeMenu.module.css";
 import AppContext from "../../helper/AppContext";
 import { useContext } from "react";
-import { useRouter } from "next/navigation";
-import { setCookie } from "../../helper/cookieHelper";
+import { useRouter } from "next/router";
+import { eraseCookie } from "../../helper/cookieHelper";
 
 function HomeMenu() {
   const { appContext, setAppContext } = useContext(AppContext);
-  const route = useRouter();
+  const router = useRouter();
+
+  const signOut = (event) => {
+    event.preventDefault();
+    eraseCookie("access_token");
+    setAppContext((currentContext) => ({
+      ...currentContext,
+      userProfile: undefined,
+      userActiveOrder: {
+        orders: [],
+      },
+      selectedEvents: [],
+      order: {
+        totalBet: 0,
+        combinedOdd: 0,
+        totalWin: 0,
+      },
+    }));
+    router.push("/");
+  };
+
   return (
     <div className={styles.homemenu}>
       <ul className={styles.listcontainer}>
         <li className={styles.list}>
-          <a href="/">
+          <a href="/about">
             <h4>About</h4>
           </a>
         </li>
@@ -24,27 +44,33 @@ function HomeMenu() {
         )}
         {appContext.userProfile && appContext.userProfile.userName && (
           <li className={`${styles.list} ${styles.username}`}>
-            <a
-              href="#"
-              onClick={() => {
-                setCookie("access_token", "", 0);
-                window.location.href = "/";
-              }}
-            >
-              <h4>{"sign out"}</h4>
+            <a href="/" onClick={signOut}>
+              <h4>sign out</h4>
             </a>
           </li>
         )}
         {!appContext.userProfile && (
           <li className={styles.list}>
-            <a href="#" onClick={() => route.push("/login")}>
+            <a
+              href="/login"
+              onClick={(event) => {
+                event.preventDefault();
+                router.push("/login");
+              }}
+            >
               <h4>log in</h4>
             </a>
           </li>
         )}
         {!appContext.userProfile && (
           <li className={styles.list}>
-            <a href="#" onClick={() => route.push("/signup")}>
+            <a
+              href="/signup"
+              onClick={(event) => {
+                event.preventDefault();
+                router.push("/signup");
+              }}
+            >
               <h4>sign up</h4>
             </a>
           </li>

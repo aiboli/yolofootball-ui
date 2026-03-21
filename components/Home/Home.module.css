@@ -46,6 +46,26 @@
   align-items: center;
 }
 
+.seoIntro {
+  width: 100%;
+  background-color: #0c1420;
+  border-top: 4px solid #fecb7a;
+  color: white;
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  color: #fecb7a;
+  margin-bottom: 10px;
+}
+
+.pageDescription {
+  color: white;
+  line-height: 1.6;
+}
+
 .dashboard {
   height: 100%;
   width: 450px;
@@ -71,5 +91,9 @@
     width: 100%;
     min-width: 300px;
     text-align: center;
+  }
+
+  .seoIntro {
+    padding: 16px;
   }
 }

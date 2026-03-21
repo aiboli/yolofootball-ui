@@ -1,39 +1,56 @@
-import { useState, useLayoutEffect } from "react";
+import { useEffect, useState } from "react";
 import AppContext from "./AppContext";
 import { getCookie } from "./cookieHelper";
-export default function AppContextProvider({ children }) {
-  const [appContext, setAppContext] = useState({
-    leagues: [],
-    events: [],
-    selectedEvents: [],
-    order: {
-      totalBet: 0,
-      totalWin: 0,
-    },
-    showMobileOrder: false,
-    userProfile: undefined,
-    isBusy: false,
-  });
 
-  useLayoutEffect(() => {
+const initialAppContext = {
+  leagues: [],
+  events: [],
+  selectedEvents: [],
+  order: {
+    totalBet: 0,
+    combinedOdd: 0,
+    totalWin: 0,
+  },
+  showMobileOrder: false,
+  userProfile: undefined,
+  userActiveOrder: {
+    orders: [],
+  },
+  isBusy: false,
+};
+
+export default function AppContextProvider({ children }) {
+  const [appContext, setAppContext] = useState(initialAppContext);
+
+  useEffect(() => {
+    let isMounted = true;
+
     async function checkAuth() {
-      if (getCookie("access_token")) {
+      const accessToken = getCookie("access_token");
+
+      if (!accessToken) {
+        return;
+      }
+
+      try {
         const res = await fetch(
           "https://service.yolofootball.com/api/users/profile",
           {
             method: "GET",
             headers: {
-              Authorization: `${getCookie("access_token")}`,
+              Authorization: accessToken,
             },
           }
         );
         const data = await res.json();
-        if (data && data.message === "unauth") {
+
+        if (!isMounted || (data && data.message === "unauth")) {
           return;
-        } else if (data && data.message === "succeed") {
-          console.log(data);
-          setAppContext({
-            ...appContext,
+        }
+
+        if (data && data.message === "succeed") {
+          setAppContext((currentContext) => ({
+            ...currentContext,
             userProfile: {
               userName: data.userProfile.userName,
               userEmail: data.userProfile.userEmail,
@@ -42,15 +59,17 @@ export default function AppContextProvider({ children }) {
               userCreatedBidIds: data.userProfile.userCreatedBidIds,
               userBalance: data.userProfile.userBalance,
             },
-          });
-          return;
-        } else {
-          return;
+          }));
         }
+      } catch (error) {
+        console.error("Failed to load user profile", error);
       }
     }
     checkAuth();
-    //check local token or something
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

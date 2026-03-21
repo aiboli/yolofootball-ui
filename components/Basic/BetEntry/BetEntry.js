@@ -1,17 +1,6 @@
 import styles from "./BetEntry.module.css";
-import { useContext, useState } from "react";
-import AppContext from "../../../helper/AppContext";
 
-function BetEntry({ entry }) {
-  const { appContext, setAppContext } = useContext(AppContext);
-  const entryOdd = entry.odd;
-  const entrySide = entry.title;
-  const entryGameTitle = entry.gameTitle;
-
-  const calculateWin = (e, odd) => {
-    const bet = e.target.value;
-    return bet * parseFloat(odd);
-  };
+function BetEntry({ entry, onRemove }) {
   return (
     <div
       className={styles.betEntry}
@@ -20,30 +9,15 @@ function BetEntry({ entry }) {
       data-title={entry.title}
     >
       <div className={styles.betEntryGameInfo}>
-        <span className={styles.betEntryTitle}>{entryGameTitle}</span>
-        <span className={styles.betEntrySide}>{"@" + entrySide}</span>
+        <span className={styles.betEntryTitle}>{entry.gameTitle}</span>
+        <span className={styles.betEntrySide}>{"@" + entry.title}</span>
       </div>
       <div className={styles.betEntryOdd}>
-        <span className={styles.betEntryOddNumber}>{entryOdd}</span>
+        <span className={styles.betEntryOddNumber}>{entry.odd}</span>
       </div>
-      <div className={styles.betEntryInputContainer}>
-        <input
-          className={styles.betEntryInput}
-          type="number"
-          placeholder="0"
-          min="0"
-          onChange={(e) => {
-            setAppContext({
-              ...appContext,
-              order: {
-                ...appContext.order,
-                totalBet: parseFloat(e.target.value),
-                totalWin: calculateWin(e, entryOdd),
-              },
-            });
-          }}
-        />
-      </div>
+      <button className={styles.betEntryRemove} onClick={() => onRemove(entry)}>
+        Remove
+      </button>
     </div>
   );
 }

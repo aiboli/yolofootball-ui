@@ -1,49 +1,47 @@
 import React, { useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./LoginComponent.module.css";
-import { useRouter } from "next/navigation";
 
 const LoginComponent = () => {
-  let [userName, setUserName] = useState("");
-  let [password, setPassword] = useState("");
-  let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
-  const { appContext, setAppContext } = useContext(AppContext);
-  const { push } = useRouter();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const redirectUrl = "https://www.yolofootball.com/";
+  const { setAppContext } = useContext(AppContext);
+  const router = useRouter();
 
-  async function onSubmit() {
+  async function onSubmit(event) {
     event.preventDefault();
-    const res = await fetch(
-      "https://service.yolofootball.com/api/users/signin",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user_name: userName,
-          user_password: password,
-          redirect_to: redirectUrl,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      }
-    );
+    const res = await fetch("https://service.yolofootball.com/api/users/signin", {
+      method: "POST",
+      body: JSON.stringify({
+        user_name: userName,
+        user_password: password,
+        redirect_to: redirectUrl,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+    });
     const data = await res.json();
     if (data.message === "succeed") {
       setCookie("access_token", data.accessToken, 7);
-      setAppContext({
-        ...appContext,
+      setAppContext((currentContext) => ({
+        ...currentContext,
         userProfile: data.userProfile,
-      });
-      push("/");
+      }));
+      router.push("/");
     } else {
       alert("user or password is wrong");
     }
   }
+
   return (
     <div className={styles.LoginComponentContainer}>
       <div className={styles.LoginComponentTitle}>
-        <h4>Login</h4>
+        <h1>Login</h1>
       </div>
       <div className={styles.LoginComponentForm}>
         <form onSubmit={onSubmit}>
@@ -69,7 +67,7 @@ const LoginComponent = () => {
             <input
               type="hidden"
               name="redirect_to"
-              value="https://www.yolofootball.com/"
+              value={redirectUrl}
             />
           </div>
           <button type="submit" className={styles.LoginComponentButton}>

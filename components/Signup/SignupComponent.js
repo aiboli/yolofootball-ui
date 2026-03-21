@@ -1,58 +1,54 @@
 import React, { useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./SignupComponent.module.css";
-import { useRouter } from "next/navigation";
 
 const SignupComponent = () => {
-  let [userName, setUserName] = useState("");
-  let [userEmail, setUserEmail] = useState("");
-  let [password, setPassword] = useState("");
-  let [confirmPassword, setConfirmPassword] = useState("");
-  let [redirectUrl, setRedirectUrl] = useState("https://www.yolofootball.com/");
-  const { appContext, setAppContext } = useContext(AppContext);
-  const { push } = useRouter();
-  console.log(encodeURIComponent(userEmail));
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const redirectUrl = "https://www.yolofootball.com/";
+  const { setAppContext } = useContext(AppContext);
+  const router = useRouter();
 
   const passwordsMatch = password === confirmPassword && password !== "";
   const isFormValid =
     userName && userEmail && password && confirmPassword && passwordsMatch;
 
-  async function onSubmitSignup() {
+  async function onSubmitSignup(event) {
     event.preventDefault();
-    const res = await fetch(
-      "https://service.yolofootball.com/api/users/signup",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user_name: userName,
-          user_email: userEmail,
-          user_password: password,
-          redirect_to: redirectUrl,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      }
-    );
-    console.log(res);
+    const res = await fetch("https://service.yolofootball.com/api/users/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        user_name: userName,
+        user_email: userEmail,
+        user_password: password,
+        redirect_to: redirectUrl,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+    });
     const data = await res.json();
     if (data.message === "succeed") {
       setCookie("access_token", data.accessToken, 7);
-      setAppContext({
-        ...appContext,
+      setAppContext((currentContext) => ({
+        ...currentContext,
         userProfile: data.userProfile,
-      });
-      push("/");
+      }));
+      router.push("/");
     } else {
       alert("account has been registered");
     }
   }
+
   return (
     <div className={styles.SignupComponentContainer}>
       <div className={styles.SignupComponentTitle}>
-        <h4>Signup</h4>
+        <h1>Signup</h1>
       </div>
       <div className={styles.SignupComponentForm}>
         <form onSubmit={onSubmitSignup}>
@@ -122,7 +118,7 @@ const SignupComponent = () => {
             <input
               type="hidden"
               name="redirect_to"
-              value="https://www.yolofootball.com/"
+              value={redirectUrl}
             />
             {!passwordsMatch && password !== "" && confirmPassword !== "" && (
               <div className={styles.SignupComponentError}>

@@ -3,15 +3,17 @@ import { useEffect, useContext } from "react";
 import { getCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 
-function HomeOrder({ order }) {
+function HomeOrder() {
   const { appContext, setAppContext } = useContext(AppContext);
   const userOrderIds = appContext?.userProfile?.userOrderIds;
 
   const homeOrAway = (betResult) => {
-    return betResult == 2 ? "Away" : betResult == 1 ? "Draw" : "Home";
+    return betResult === 2 ? "Away" : betResult === 1 ? "Draw" : "Home";
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchOrder() {
       const res = await fetch(
         "https://service.yolofootball.com/api/orders/getHydratedOrders",
@@ -29,34 +31,41 @@ function HomeOrder({ order }) {
         }
       );
       const data = await res.json();
-      console.log(data);
-      if (data && data.length > 0) {
-        setAppContext({
-          ...appContext,
+
+      if (!isMounted) {
+        return;
+      }
+
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userActiveOrder: {
+          ...currentContext.userActiveOrder,
+          orders: Array.isArray(data) ? data : [],
+        },
+      }));
+    }
+
+    if (getCookie("access_token") && userOrderIds?.length) {
+      fetchOrder().catch((error) => {
+        console.error("Failed to load active orders", error);
+        if (!isMounted) {
+          return;
+        }
+        setAppContext((currentContext) => ({
+          ...currentContext,
           userActiveOrder: {
-            ...appContext.userActiveOrder,
-            orders: data,
-          },
-        });
-      } else {
-        setAppContext({
-          ...appContext,
-          userActiveOrder: {
-            ...appContext.userActiveOrder,
+            ...currentContext.userActiveOrder,
             orders: [],
           },
-        });
-      }
-      return;
+        }));
+      });
     }
-    if (!!getCookie("access_token") && userOrderIds) {
-      fetchOrder();
-    }
+
     return () => {
-      console.log("Order fetch unmounted");
+      isMounted = false;
     };
-  }, [userOrderIds]);
-  console.log(appContext.userActiveOrder);
+  }, [setAppContext, userOrderIds]);
+
   return (
     <div className={styles.userOrderContainer}>
       <h4 className={styles.userOrderTitle}>Your Order</h4>

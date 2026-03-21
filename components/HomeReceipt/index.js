@@ -3,49 +3,84 @@ import { useContext, useState, useEffect } from "react";
 import AppContext from "../../helper/AppContext";
 import BetEntry from "../Basic/BetEntry";
 import { getCookie } from "../../helper/cookieHelper";
+import {
+  calculateCombinedOdd,
+  calculatePotentialWin,
+} from "../../helper/betHelpers";
 
 function HomeReceipt({ isMobile }) {
   const { appContext, setAppContext } = useContext(AppContext);
   const hasActiveGameOdd = appContext.selectedEvents.length > 0;
-  const activeGameOdd = hasActiveGameOdd && appContext.selectedEvents[0];
-  let size = useWindowSize();
-  let isCircleButton = size.width <= 600;
+  const size = useWindowSize();
+  const isCircleButton = size.width <= 600;
+  const combinedOdd = appContext.order.combinedOdd || 0;
 
   const clickHandler = () => {
     if (!hasActiveGameOdd) return;
-    setAppContext({
-      ...appContext,
-      showMobileOrder: !appContext.showMobileOrder,
+    setAppContext((currentContext) => ({
+      ...currentContext,
+      showMobileOrder: !currentContext.showMobileOrder,
+    }));
+  };
+
+  const removeEntry = (entry) => {
+    setAppContext((currentContext) => {
+      const nextSelections = currentContext.selectedEvents.filter(
+        (selectedEvent) => selectedEvent.eventId !== entry.eventId
+      );
+
+      return {
+        ...currentContext,
+        selectedEvents: nextSelections,
+        order: {
+          ...currentContext.order,
+          combinedOdd: calculateCombinedOdd(nextSelections),
+          totalWin: calculatePotentialWin(
+            currentContext.order.totalBet,
+            nextSelections
+          ),
+        },
+      };
     });
   };
 
+  const updateStake = (value) => {
+    const totalBet = parseFloat(value) || 0;
+
+    setAppContext((currentContext) => ({
+      ...currentContext,
+      order: {
+        ...currentContext.order,
+        totalBet,
+        combinedOdd: calculateCombinedOdd(currentContext.selectedEvents),
+        totalWin: calculatePotentialWin(totalBet, currentContext.selectedEvents),
+      },
+    }));
+  };
+
   const submitHandler = async () => {
-    if (!hasActiveGameOdd) return;
-    console.log(appContext);
-    let bet_result = -1;
-    if (appContext.selectedEvents[0].title.toLowerCase() === "home") {
-      bet_result = 0;
-    } else if (appContext.selectedEvents[0].title.toLowerCase() === "away") {
-      bet_result = 2;
-    } else {
-      bet_result = 1;
+    if (!hasActiveGameOdd || !appContext.userProfile?.userName) return;
+
+    // The current backend order endpoint still expects a single fixture payload.
+    if (appContext.selectedEvents.length > 1) {
+      alert("Multi-pick submit is not connected to the backend yet.");
+      return;
     }
-    console.log(
-      JSON.stringify({
-        fixture_id: appContext.selectedEvents[0].eventId,
-        bet_result: bet_result,
-        odd_mount: appContext.order.totalBet,
-        odd_rate: appContext.selectedEvents[0].odd,
-        win_return: appContext.order.totalWin,
-        fixture_state: "notstarted",
-        user_name: appContext.userProfile.userName,
-      })
-    );
+
+    let betResult = -1;
+    if (appContext.selectedEvents[0].title.toLowerCase() === "home") {
+      betResult = 0;
+    } else if (appContext.selectedEvents[0].title.toLowerCase() === "away") {
+      betResult = 2;
+    } else {
+      betResult = 1;
+    }
+
     const res = await fetch("https://service.yolofootball.com/api/orders", {
       method: "POST",
       body: JSON.stringify({
         fixture_id: appContext.selectedEvents[0].eventId,
-        bet_result: bet_result,
+        bet_result: betResult,
         odd_mount: appContext.order.totalBet,
         odd_rate: appContext.selectedEvents[0].odd,
         win_return: appContext.order.totalWin,
@@ -59,93 +94,106 @@ function HomeReceipt({ isMobile }) {
       credentials: "same-origin",
     });
     const data = await res.json();
-    if (!!data.orderdate) {
+    if (data.orderdate) {
       alert("order is created");
-      setAppContext({
-        ...appContext,
+      setAppContext((currentContext) => ({
+        ...currentContext,
         selectedEvents: [],
-      });
+        order: {
+          ...currentContext.order,
+          totalBet: 0,
+          combinedOdd: 0,
+          totalWin: 0,
+        },
+      }));
     } else {
       alert("order is failed to create");
     }
   };
 
-  if (isMobile) {
-    return (
-      <div className={styles.receiptContainerMobile}>
-        <div className={styles.receiptTitle}>
-          <h4>Bet Basket</h4>
-        </div>
-        <br />
-        <div className={styles.betContainer}>
+  const slipContent = (
+    <>
+      <div className={styles.receiptTitle}>
+        <h4>Bet Basket</h4>
+      </div>
+      <br />
+      <div className={styles.betContainer}>
+        {!hasActiveGameOdd ? (
           <h4>
-            {!hasActiveGameOdd ? (
-              "your basket is empty"
-            ) : (
-              <BetEntry entry={activeGameOdd}></BetEntry>
-            )}
+            <span>your basket is empty</span>
           </h4>
+        ) : (
+          // Each selected fixture gets its own line item in the slip.
+          appContext.selectedEvents.map((entry) => (
+            <BetEntry
+              key={entry.optionId}
+              entry={entry}
+              onRemove={removeEntry}
+            />
+          ))
+        )}
+      </div>
+      <div className={styles.betStakeContainer}>
+        <label
+          className={styles.betStakeLabel}
+          htmlFor={`stake-${isMobile ? "mobile" : "desktop"}`}
+        >
+          Stake
+        </label>
+        <input
+          id={`stake-${isMobile ? "mobile" : "desktop"}`}
+          className={styles.betStakeInput}
+          type="number"
+          placeholder="0"
+          min="0"
+          value={appContext.order.totalBet || ""}
+          disabled={!hasActiveGameOdd}
+          onChange={(e) => updateStake(e.target.value)}
+        />
+      </div>
+      <div className={styles.betSummary}>
+        <div className={styles.betSummaryTotal}>
+          <span className={styles.betSummaryTotalTitle}>{"rate: "}</span>
+          <span className={styles.betSummaryTotalNumber}>
+            {combinedOdd ? combinedOdd.toFixed(2) : "0.00"}
+          </span>
         </div>
-        <div className={styles.betSummary}>
-          <div className={styles.betSummaryTotal}>
-            <span className={styles.betSummaryTotalTitle}>{"bet: "}</span>
-            <span className={styles.betSummaryTotalNumber}>
-              {appContext.order.totalBet}
-            </span>
-          </div>
-          <div className={styles.betSummaryTotal}>
-            <span className={styles.betSummaryTotalTitle}>{"win: "}</span>
-            <span className={styles.betSummaryTotalNumberWin}>
-              {appContext.order.totalWin}
-            </span>
-          </div>
+        <div className={styles.betSummaryTotal}>
+          <span className={styles.betSummaryTotalTitle}>{"bet: "}</span>
+          <span className={styles.betSummaryTotalNumber}>
+            {appContext.order.totalBet}
+          </span>
+        </div>
+        <div className={styles.betSummaryTotal}>
+          <span className={styles.betSummaryTotalTitle}>{"win: "}</span>
+          <span className={styles.betSummaryTotalNumberWin}>
+            {appContext.order.totalWin.toFixed(2)}
+          </span>
         </div>
       </div>
-    );
+    </>
+  );
+
+  if (isMobile) {
+    return <div className={styles.receiptContainerMobile}>{slipContent}</div>;
   }
+
   return (
     <div className={styles.receiptContainer}>
-      {isCircleButton && (
-        <button className={styles.mobileButton} onClick={() => clickHandler()}>
-          {hasActiveGameOdd ? "📃" : "🛒"}
+      {isCircleButton ? (
+        <button className={styles.mobileButton} onClick={clickHandler}>
+          {hasActiveGameOdd ? "Slip" : "Cart"}
         </button>
-      )}
-      {!isCircleButton && (
+      ) : (
         <div>
-          <div className={styles.receiptTitle}>
-            <h4>Bet Basket</h4>
-          </div>
-          <br />
-          <div className={styles.betContainer}>
-            <h4>
-              {!hasActiveGameOdd ? (
-                <span>{"your basket is empty"}</span>
-              ) : (
-                <BetEntry entry={activeGameOdd}></BetEntry>
-              )}
-            </h4>
-          </div>
-          <div className={styles.betSummary}>
-            <div className={styles.betSummaryTotal}>
-              <span className={styles.betSummaryTotalTitle}>{"bet: "}</span>
-              <span className={styles.betSummaryTotalNumber}>
-                {appContext.order.totalBet}
-              </span>
-            </div>
-            <div className={styles.betSummaryTotal}>
-              <span className={styles.betSummaryTotalTitle}>{"win: "}</span>
-              <span className={styles.betSummaryTotalNumberWin}>
-                {appContext.order.totalWin}
-              </span>
-            </div>
-          </div>
+          {slipContent}
           <div className={styles.betButtonContainer}>
             <button
               className={styles.betButton}
-              onClick={() => submitHandler()}
+              onClick={submitHandler}
               disabled={!hasActiveGameOdd}
             >
-              {"submit"}
+              submit
             </button>
           </div>
         </div>
@@ -155,33 +203,25 @@ function HomeReceipt({ isMobile }) {
 }
 
 function useWindowSize() {
-  // Initialize state with undefined width/height so server and client renders match
-  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
   });
 
   useEffect(() => {
-    // only execute all the code below in client side
-    // Handler to call on window resize
     function handleResize() {
-      // Set window width/height to state
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
     }
 
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Call handler right away so state gets updated with initial window size
     handleResize();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty array ensures that effect is only run on mount
+  }, []);
+
   return windowSize;
 }
 

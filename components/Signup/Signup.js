@@ -1,21 +1,19 @@
 import React from "react";
 import HomeMenu from "../HomeMenu";
 import HomeLogo from "../HomeLogo";
-import Head from "next/head";
 import styles from "./Signup.module.css";
 import SignupComponent from "./SignupComponent";
+import SeoHead from "../SeoHead";
 
 const Signup = () => {
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto"
-          rel="stylesheet"
-        />
-      </Head>
+      <SeoHead
+        title="Sign up"
+        description="Create a yolofootball account to save football picks, track active slips, and manage your betting profile."
+        path="/signup"
+        noindex={true}
+      />
       <div className={styles.header}>
         <nav className={styles.navbar}>
           <HomeLogo />
@@ -26,7 +24,7 @@ const Signup = () => {
         <SignupComponent />
       </div>
       <div className={styles.footer}>
-        <h5>®2023 Yolofootball.com. All rights reserved.</h5>
+        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
       </div>
     </>
   );

@@ -57,6 +57,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0px 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .betSummaryTotalNumberWin {
@@ -71,12 +73,18 @@
   font-size: 12px;
 }
 
+.betSummaryTotalNumber {
+  color: white;
+  font-weight: 500;
+}
+
 .mobileButton {
   text-decoration: none;
   background-color: transparent;
   border: none;
   color: #fecb7a;
   font-size: 28px;
+  font-family: "Roboto", serif;
 }
 
 .betButtonContainer {
@@ -91,6 +99,7 @@
   cursor: pointer;
   height: 30px;
   min-width: 100%;
+  font-family: "Roboto", serif;
   transition: background-color 250ms ease-in-out, transform 150ms ease;
 }
 
@@ -112,4 +121,32 @@
   color: white;
   font-size: 14px;
   font-weight: 100;
+}
+
+.betStakeContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 10px;
+}
+
+.betStakeLabel {
+  color: white;
+  font-size: 12px;
+  font-family: "Roboto", serif;
+}
+
+.betStakeInput {
+  width: 100%;
+  max-width: 120px;
+  font-family: "Roboto", serif;
+  background-color: white;
+  border: none;
+  height: 28px;
+  padding: 0 8px;
+}
+
+.betStakeInput:disabled {
+  background-color: #d8d8d8;
+  color: #6e6e6e;
 }

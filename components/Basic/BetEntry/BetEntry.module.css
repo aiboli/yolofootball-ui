@@ -14,17 +14,19 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   background-color: #0c1420;
+  margin-bottom: 8px;
 }
 
 .betEntryGameInfo {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   padding: 5px 3px;
+  flex: 1;
 }
 
 .betEntryInputContainer {
@@ -39,11 +41,17 @@
   font-size: 14px;
   font-weight: 200;
   color: #fecb7a;
-  padding: 5px 20px;
+  padding: 5px 16px;
   border-right: 1px solid #fecb7a;
   border-left: 1px solid #fecb7a;
 }
 
-.betEntryInput {
-  width: 50px;
+.betEntryRemove {
+  margin: 0 10px;
+  border: none;
+  background: transparent;
+  color: #fecb7a;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: "Roboto", serif;
 }
