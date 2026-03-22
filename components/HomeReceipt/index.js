@@ -61,31 +61,28 @@ function HomeReceipt({ isMobile }) {
   const submitHandler = async () => {
     if (!hasActiveGameOdd || !appContext.userProfile?.userName) return;
 
-    // The current backend order endpoint still expects a single fixture payload.
-    if (appContext.selectedEvents.length > 1) {
-      alert("Multi-pick submit is not connected to the backend yet.");
-      return;
-    }
-
-    let betResult = -1;
-    if (appContext.selectedEvents[0].title.toLowerCase() === "home") {
-      betResult = 0;
-    } else if (appContext.selectedEvents[0].title.toLowerCase() === "away") {
-      betResult = 2;
-    } else {
-      betResult = 1;
-    }
+    const selections = appContext.selectedEvents.map((selection) => ({
+      fixture_id: selection.eventId,
+      market: "match_winner",
+      selection: selection.title.toLowerCase(),
+      selection_code:
+        selection.title.toLowerCase() === "home"
+          ? 0
+          : selection.title.toLowerCase() === "draw"
+            ? 1
+            : 2,
+      odd_rate: parseFloat(selection.odd),
+      fixture_state: "notstarted",
+    }));
 
     const res = await fetch("https://service.yolofootball.com/api/orders", {
       method: "POST",
       body: JSON.stringify({
-        fixture_id: appContext.selectedEvents[0].eventId,
-        bet_result: betResult,
-        odd_mount: appContext.order.totalBet,
-        odd_rate: appContext.selectedEvents[0].odd,
+        order_type: selections.length > 1 ? "accumulator" : "single",
+        stake: appContext.order.totalBet,
+        combined_odd: combinedOdd,
         win_return: appContext.order.totalWin,
-        fixture_state: "notstarted",
-        user_name: appContext.userProfile.userName,
+        selections,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -94,11 +91,16 @@ function HomeReceipt({ isMobile }) {
       credentials: "same-origin",
     });
     const data = await res.json();
-    if (data.orderdate) {
+
+    if (res.ok && data.message === "succeed") {
       alert("order is created");
       setAppContext((currentContext) => ({
         ...currentContext,
         selectedEvents: [],
+        userActiveOrder: {
+          ...currentContext.userActiveOrder,
+          orders: [...(data.orders || []), ...(currentContext.userActiveOrder?.orders || [])],
+        },
         order: {
           ...currentContext.order,
           totalBet: 0,
@@ -123,7 +125,6 @@ function HomeReceipt({ isMobile }) {
             <span>your basket is empty</span>
           </h4>
         ) : (
-          // Each selected fixture gets its own line item in the slip.
           appContext.selectedEvents.map((entry) => (
             <BetEntry
               key={entry.optionId}
