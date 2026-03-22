@@ -11,6 +11,35 @@ function HomeOrder() {
     return betResult === 2 ? "Away" : betResult === 1 ? "Draw" : "Home";
   };
 
+  const formatAmount = (value) => {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue.toFixed(2) : "0.00";
+  };
+
+  const getDisplayedWin = (item) => {
+    return item?.settled_win_return ?? item?.win_return ?? 0;
+  };
+
+  const getOrderResultLabel = (item) => {
+    if (item?.order_result === "won") {
+      return "Won";
+    }
+    if (item?.order_result === "lost") {
+      return "Lost";
+    }
+    return "Pending";
+  };
+
+  const getOrderResultClassName = (item) => {
+    if (item?.order_result === "won") {
+      return styles.userOrderStatusWon;
+    }
+    if (item?.order_result === "lost") {
+      return styles.userOrderStatusLost;
+    }
+    return styles.userOrderStatusPending;
+  };
+
   const renderOrderSummary = (item) => {
     if (Array.isArray(item.selection_details) && item.selection_details.length > 1) {
       return (
@@ -19,19 +48,26 @@ function HomeOrder() {
             {item.selection_details.length} picks @{" "}
             <span>{Number(item.odd_rate || 0).toFixed(2)}</span>
           </h5>
+          <div className={`${styles.userOrderStatus} ${getOrderResultClassName(item)}`}>
+            {getOrderResultLabel(item)}
+          </div>
           <p>
             {item.selection_details
               .map((selection) => {
                 const teams = selection.fixture_details?.teams;
+                const fixtureResult =
+                  selection.fixture_result && selection.fixture_result !== "pending"
+                    ? ` - ${selection.fixture_result}`
+                    : "";
                 return `${teams?.home?.name} vs ${teams?.away?.name} (${homeOrAway(
                   selection.bet_result
-                )})`;
+                )}${fixtureResult})`;
               })
               .join(" | ")}
             {" bet: "}
-            {item.odd_mount}
+            {formatAmount(item.odd_mount)}
             {" win: "}
-            <span className={styles.userOrderWin}>{item.win_return}</span>
+            <span className={styles.userOrderWin}>{formatAmount(getDisplayedWin(item))}</span>
           </p>
         </>
       );
@@ -46,6 +82,9 @@ function HomeOrder() {
             {new Date(item?.fixture_details?.fixture?.date).toLocaleDateString()}
           </span>
         </h5>
+        <div className={`${styles.userOrderStatus} ${getOrderResultClassName(item)}`}>
+          {getOrderResultLabel(item)}
+        </div>
         <p>
           {item?.fixture_details?.teams?.home?.name +
             " vs " +
@@ -55,9 +94,11 @@ function HomeOrder() {
             " " +
             homeOrAway(item?.bet_result) +
             " bet: " +
-            item?.odd_mount +
+            formatAmount(item?.odd_mount) +
             " win: "}
-          <span className={styles.userOrderWin}>{item?.win_return}</span>
+          <span className={styles.userOrderWin}>
+            {formatAmount(getDisplayedWin(item))}
+          </span>
         </p>
       </>
     );

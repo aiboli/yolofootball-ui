@@ -94,3 +94,29 @@
 .userOrderWin {
   color: #fecb7a;
 }
+
+.userOrderStatus {
+  display: inline-block;
+  margin: 4px 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.userOrderStatusPending {
+  background-color: rgba(254, 203, 122, 0.15);
+  color: #fecb7a;
+}
+
+.userOrderStatusWon {
+  background-color: rgba(106, 227, 168, 0.18);
+  color: #6ae3a8;
+}
+
+.userOrderStatusLost {
+  background-color: rgba(255, 120, 120, 0.18);
+  color: #ff8f8f;
+}
