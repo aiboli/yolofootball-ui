@@ -9,12 +9,47 @@ import { useEffect, useState, useContext } from "react";
 import AppContext from "../../helper/AppContext";
 import Loader from "../Loader";
 import SeoHead from "../SeoHead";
+import { getCookie } from "../../helper/cookieHelper";
 
 function Home() {
   const [entries, setEntries] = useState([]);
+  const [customOddsByFixture, setCustomOddsByFixture] = useState({});
   const [loading, setLoading] = useState(true);
   const { appContext, setAppContext } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
+
+  async function loadCustomOdds(entryList = entries) {
+    const fixtureIds = entryList
+      .map((item) => item.fixture?.id)
+      .filter((fixtureId) => Number.isInteger(fixtureId));
+
+    if (fixtureIds.length === 0) {
+      setCustomOddsByFixture({});
+      return;
+    }
+
+    try {
+      const accessToken = getCookie("access_token");
+      const response = await fetch("https://service.yolofootball.com/api/events/search", {
+        method: "POST",
+        body: JSON.stringify({
+          fixture_ids: fixtureIds,
+          status: "active",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { authorization: `${accessToken}` } : {}),
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        setCustomOddsByFixture(data.events_by_fixture || {});
+      }
+    } catch (error) {
+      console.error("Failed to load custom odds", error);
+    }
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -39,6 +74,9 @@ function Home() {
 
         if (isMounted) {
           setEntries(entryData);
+          loadCustomOdds(entryData).catch((error) => {
+            console.error("Failed to load custom odds", error);
+          });
         }
       } catch (error) {
         console.error("Failed to load fixtures", error);
@@ -60,6 +98,16 @@ function Home() {
     };
   }, [setAppContext]);
 
+  useEffect(() => {
+    if (entries.length === 0) {
+      return;
+    }
+
+    loadCustomOdds(entries).catch((error) => {
+      console.error("Failed to refresh custom odds", error);
+    });
+  }, [appContext.userProfile?.userName]);
+
   const entryComponent =
     entries?.length > 0 ? (
       entries.map((item) => (
@@ -71,6 +119,9 @@ function Home() {
           odd={item.odds}
           fixture={item.fixture}
           league={item.league}
+          customEvents={customOddsByFixture[String(item.fixture?.id)] || []}
+          canCreateCustomOdds={!!appContext.userProfile?.userName}
+          onCustomOddsCreated={() => loadCustomOdds(entries)}
         />
       ))
     ) : (

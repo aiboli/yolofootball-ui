@@ -7,12 +7,46 @@
   width: 100%;
   margin: 0px 0px 7px 0px;
 }
+
 .gameEntryTitle {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
-  padding: 5px 10px;
+  padding: 10px 10px 6px;
+}
+
+.titleBlock {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.titleBlock h5 {
+  margin: 0;
+}
+
+.gameEntryActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.customActionButton {
+  border: 1px solid #fecb7a;
+  background: transparent;
+  color: #fecb7a;
+  min-width: 40px;
+  height: 34px;
+  padding: 0 12px;
+  font-weight: 700;
+}
+
+.customActionButtonAccent {
+  background: #fecb7a;
+  color: #0c1420;
 }
 
 .gameEntrySubTitle {
@@ -49,4 +83,161 @@
   width: 20px;
   height: 20px;
   margin-right: 10px;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(12, 20, 32, 0.68);
+}
+
+.modalCard {
+  width: min(100%, 560px);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: #f8f2e7;
+  color: #0c1420;
+  border-top: 5px solid #fecb7a;
+  padding: 20px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modalHeader h4 {
+  margin: 4px 0;
+}
+
+.modalEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6f4c15;
+  font-size: 12px;
+}
+
+.modalSummary {
+  margin: 0;
+  color: #44566f;
+}
+
+.modalCloseButton {
+  border: 1px solid #0c1420;
+  background: transparent;
+  color: #0c1420;
+  min-width: 36px;
+  height: 36px;
+}
+
+.customOddsForm {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.formField {
+  display: grid;
+  gap: 6px;
+}
+
+.formField input {
+  border: 1px solid #c6af86;
+  padding: 10px 12px;
+  background: white;
+}
+
+.formError {
+  margin: 0;
+  color: #b42318;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primaryButton {
+  border: none;
+  background: #0c1420;
+  color: #fecb7a;
+  padding: 10px 16px;
+}
+
+.secondaryButton {
+  border: 1px solid #0c1420;
+  background: transparent;
+  color: #0c1420;
+  padding: 10px 16px;
+}
+
+.customOddsList {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.customOddsCard {
+  background: white;
+  border-left: 4px solid #fecb7a;
+  padding: 12px;
+}
+
+.customOddsCardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #44566f;
+}
+
+.customOddsOptionRow {
+  display: grid;
+  gap: 8px;
+}
+
+.customOddsOption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #ece1d0;
+  padding-top: 8px;
+}
+
+.emptyState {
+  margin: 0;
+  color: #44566f;
+}
+
+@media (max-width: 600px) {
+  .titleBlock {
+    flex-direction: column;
+  }
+
+  .gameEntryActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .gameOddButtonGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gameOddButtonGroup button {
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+
+  .gameOddButtonGroup button:last-child {
+    margin-bottom: 0;
+  }
 }
