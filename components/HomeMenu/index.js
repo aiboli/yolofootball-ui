@@ -4,12 +4,20 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { eraseCookie } from "../../helper/cookieHelper";
 
+const formatBalance = (value) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+
 function HomeMenu() {
   const { appContext, setAppContext } = useContext(AppContext);
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const unreadNotificationCount = Number(appContext.unreadNotificationCount || 0);
+  const userBalance = formatBalance(appContext.userProfile?.userBalance);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -75,6 +83,21 @@ function HomeMenu() {
     <div className={styles.homemenu} ref={menuRef}>
       {appContext.userProfile?.userName && (
         <a
+          href="/user"
+          className={styles.balancePill}
+          onClick={(event) => {
+            event.preventDefault();
+            closeMenu();
+            router.push("/user");
+          }}
+          aria-label={`Account balance ${userBalance}`}
+        >
+          <span className={styles.balanceLabel}>Balance</span>
+          <strong className={styles.balanceValue}>{userBalance}</strong>
+        </a>
+      )}
+      {appContext.userProfile?.userName && (
+        <a
           href="/notifications"
           className={styles.notificationButton}
           onClick={(event) => {
@@ -124,6 +147,21 @@ function HomeMenu() {
         className={`${styles.listcontainer} ${isMenuOpen ? styles.listcontainerOpen : ""}`}
         id="home-navigation-menu"
       >
+        {appContext.userProfile?.userName && (
+          <li className={`${styles.list} ${styles.balanceListItem}`}>
+            <a
+              href="/user"
+              onClick={(event) => {
+                event.preventDefault();
+                closeMenu();
+                router.push("/user");
+              }}
+            >
+              <span className={styles.mobileBalanceLabel}>Balance</span>
+              <strong className={styles.mobileBalanceValue}>{userBalance}</strong>
+            </a>
+          </li>
+        )}
         <li className={styles.list}>
           <a href="/insights" onClick={closeMenu}>
             <h4>Insights</h4>

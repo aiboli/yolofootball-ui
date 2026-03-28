@@ -5,6 +5,30 @@
   gap: 10px;
 }
 
+.balancePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(254, 203, 122, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fecb7a;
+  text-decoration: none;
+}
+
+.balanceLabel {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(254, 203, 122, 0.72);
+}
+
+.balanceValue {
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .listcontainer {
   display: flex;
   justify-content: center;
@@ -114,6 +138,29 @@
   min-width: unset;
 }
 
+.balanceListItem {
+  display: none;
+}
+
+.balanceListItem a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mobileBalanceLabel {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(254, 203, 122, 0.72);
+}
+
+.mobileBalanceValue {
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .list:hover {
   background-color: #fecb7a;
   color: #0c1420;
@@ -137,6 +184,10 @@
     position: relative;
     z-index: 3;
     margin-right: 8px;
+  }
+
+  .balancePill {
+    display: none;
   }
 
   .listcontainer {
@@ -181,6 +232,10 @@
 
   .list.username {
     max-width: unset;
+  }
+
+  .balanceListItem {
+    display: block;
   }
 
   .list h4 {
