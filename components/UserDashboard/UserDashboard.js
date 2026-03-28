@@ -93,6 +93,16 @@ const getEventStatusClassName = (event) => {
   return styles.badgeWarning;
 };
 
+const getPredictionStatusClassName = (prediction) => {
+  if (prediction?.result === "won") {
+    return styles.badgePositive;
+  }
+  if (prediction?.result === "lost") {
+    return styles.badgeNegative;
+  }
+  return styles.badgeWarning;
+};
+
 const getOrderTitle = (order) => {
   if (order?.selectionCount > 1) {
     return `${order.selectionCount} picks accumulator`;
@@ -356,6 +366,22 @@ function UserDashboard() {
                     <span className={styles.label}>Member since</span>
                     <p>{formatDate(profile.createdDate)}</p>
                   </div>
+                  <div>
+                    <span className={styles.label}>Favorite teams</span>
+                    <p>
+                      {profile.favoriteTeams?.length > 0
+                        ? profile.favoriteTeams.join(", ")
+                        : "No teams followed yet"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className={styles.label}>Favorite leagues</span>
+                    <p>
+                      {profile.favoriteLeagues?.length > 0
+                        ? profile.favoriteLeagues.join(", ")
+                        : "No leagues followed yet"}
+                    </p>
+                  </div>
                 </div>
               </article>
 
@@ -376,6 +402,10 @@ function UserDashboard() {
               <article className={styles.statCard}>
                 <span className={styles.label}>Custom events created</span>
                 <p className={styles.statValue}>{profile.customEventCount}</p>
+              </article>
+              <article className={styles.statCard}>
+                <span className={styles.label}>Free predictions</span>
+                <p className={styles.statValue}>{profile.predictionCount}</p>
               </article>
             </section>
 
@@ -463,6 +493,54 @@ function UserDashboard() {
                         {eventActionError.eventId === event.id && eventActionError.message && (
                           <p className={styles.actionError}>{eventActionError.message}</p>
                         )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </article>
+
+              <article className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <h2>Recent predictions</h2>
+                  <span className={styles.sectionNote}>Latest 5</span>
+                </div>
+                {profile.recentPredictions.length === 0 ? (
+                  <p className={styles.emptyState}>
+                    No free predictions yet. Make one from today&apos;s spotlight fixture on the
+                    home page.
+                  </p>
+                ) : (
+                  <div className={styles.activityList}>
+                    {profile.recentPredictions.map((prediction) => (
+                      <div
+                        key={prediction.id || `${prediction.fixtureId}-${prediction.createdAt}`}
+                        className={styles.activityItem}
+                      >
+                        <div className={styles.activityHeader}>
+                          <div>
+                            <h3>
+                              {prediction.fixture?.teams?.home?.name} vs{" "}
+                              {prediction.fixture?.teams?.away?.name}
+                            </h3>
+                            <p className={styles.activityMeta}>
+                              {prediction.fixture?.league?.name || "Fixture"} |{" "}
+                              {formatDateTime(prediction.fixture?.date || prediction.createdAt)}
+                            </p>
+                          </div>
+                          <span
+                            className={`${styles.badge} ${getPredictionStatusClassName(
+                              prediction
+                            )}`}
+                          >
+                            {prediction.result}
+                          </span>
+                        </div>
+                        <p className={styles.activityDetail}>
+                          Picked {prediction.predictedLabel || prediction.predictedResult}
+                          {prediction.actualResult !== null
+                            ? ` | Actual result ${prediction.actualResult}`
+                            : ""}
+                        </p>
                       </div>
                     ))}
                   </div>

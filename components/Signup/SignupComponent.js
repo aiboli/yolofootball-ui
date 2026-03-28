@@ -165,6 +165,11 @@ const SignupComponent = () => {
               analyze, and improve the product. Last updated {PRIVACY_POLICY_LAST_UPDATED}.
             </span>
           </label>
+          <p className={styles.legalMeta}>
+            You should also review our <Link href="/terms">Terms of Use</Link> and{" "}
+            <Link href="/responsible-play">Responsible Play</Link> guidance before using
+            account-based features.
+          </p>
           {!passwordsMatch && password !== "" && confirmPassword !== "" && (
             <div className={styles.formError}>Passwords do not match.</div>
           )}

@@ -12,6 +12,7 @@ import SeoHead from "../SeoHead";
 import { getCookie } from "../../helper/cookieHelper";
 import { calculateCombinedOdd, calculatePotentialWin } from "../../helper/betHelpers";
 import { readJsonSafely } from "../../helper/apiResponse";
+import normalizeUserProfile from "../../helper/normalizeUserProfile";
 import {
   getDefaultHomePreferences,
   readHomePreferences,
@@ -82,10 +83,13 @@ const formatRecordTime = (value) => {
 };
 
 const getStepCompletionMap = ({ userProfile, preferences, selectedEvents }) => ({
-  signup: !!userProfile?.userName,
+  signup: userProfile?.onboardingState?.signup_completed ?? !!userProfile?.userName,
   follow:
+    userProfile?.onboardingState?.preferences_completed ??
     (preferences?.favoriteTeams?.length || 0) + (preferences?.favoriteLeagues?.length || 0) > 0,
-  "starter-slip": Array.isArray(selectedEvents) && selectedEvents.length > 0,
+  "starter-slip":
+    userProfile?.onboardingState?.starter_slip_loaded ??
+    (Array.isArray(selectedEvents) && selectedEvents.length > 0),
 });
 
 function Home() {
@@ -96,6 +100,8 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [preferences, setPreferences] = useState(getDefaultHomePreferences());
   const [shareFeedback, setShareFeedback] = useState("");
+  const [predictionFeedback, setPredictionFeedback] = useState("");
+  const [isSubmittingPrediction, setIsSubmittingPrediction] = useState(false);
   const { appContext, setAppContext } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
 
@@ -138,6 +144,21 @@ function Home() {
   useEffect(() => {
     setPreferences(readHomePreferences());
   }, []);
+
+  useEffect(() => {
+    if (!appContext.userProfile?.userName) {
+      return;
+    }
+
+    setPreferences({
+      favoriteTeams: Array.isArray(appContext.userProfile.favoriteTeams)
+        ? appContext.userProfile.favoriteTeams
+        : [],
+      favoriteLeagues: Array.isArray(appContext.userProfile.favoriteLeagues)
+        ? appContext.userProfile.favoriteLeagues
+        : [],
+    });
+  }, [appContext.userProfile?.userName, appContext.userProfile?.favoriteTeams, appContext.userProfile?.favoriteLeagues]);
 
   useEffect(() => {
     let isMounted = true;
@@ -232,15 +253,97 @@ function Home() {
     saveHomePreferences(nextPreferences);
   };
 
+  const syncProfileFromResponse = (data) => {
+    if (data?.message !== "succeed" || !data?.userProfile) {
+      return;
+    }
+
+    setAppContext((currentContext) => ({
+      ...currentContext,
+      userProfile: normalizeUserProfile(data.userProfile),
+    }));
+  };
+
+  const refreshUserProfile = async () => {
+    const accessToken = getCookie("access_token");
+    if (!accessToken) {
+      return;
+    }
+
+    const response = await fetch("https://service.yolofootball.com/api/users/profile", {
+      method: "GET",
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+    const data = await readJsonSafely(response);
+    if (response.ok) {
+      syncProfileFromResponse(data);
+    }
+  };
+
+  const persistPreferences = async (nextPreferences) => {
+    updatePreferences(nextPreferences);
+
+    const accessToken = getCookie("access_token");
+    if (!accessToken || !appContext.userProfile?.userName) {
+      return;
+    }
+
+    try {
+      const response = await fetch("https://service.yolofootball.com/api/users/preferences", {
+        method: "PUT",
+        body: JSON.stringify({
+          favorite_teams: nextPreferences.favoriteTeams,
+          favorite_leagues: nextPreferences.favoriteLeagues,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: accessToken,
+        },
+      });
+      const data = await readJsonSafely(response);
+      if (response.ok) {
+        syncProfileFromResponse(data);
+      }
+    } catch (error) {
+      console.error("Failed to save preferences", error);
+    }
+  };
+
+  const markOnboardingStep = async (nextOnboardingState) => {
+    const accessToken = getCookie("access_token");
+    if (!accessToken || !appContext.userProfile?.userName) {
+      return;
+    }
+
+    try {
+      const response = await fetch("https://service.yolofootball.com/api/users/onboarding", {
+        method: "PUT",
+        body: JSON.stringify(nextOnboardingState),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: accessToken,
+        },
+      });
+      const data = await readJsonSafely(response);
+      if (response.ok) {
+        syncProfileFromResponse(data);
+      }
+    } catch (error) {
+      console.error("Failed to update onboarding state", error);
+    }
+  };
+
   const handleToggleTeam = (teamName) => {
-    updatePreferences({
+    persistPreferences({
       ...preferences,
       favoriteTeams: togglePreference(preferences.favoriteTeams, teamName),
     });
   };
 
   const handleToggleLeague = (leagueName) => {
-    updatePreferences({
+    persistPreferences({
       ...preferences,
       favoriteLeagues: togglePreference(preferences.favoriteLeagues, leagueName),
     });
@@ -270,6 +373,57 @@ function Home() {
       },
     }));
     setShareFeedback("Starter slip loaded into your basket.");
+    markOnboardingStep({
+      starter_slip_loaded: true,
+    }).catch(() => {});
+  };
+
+  const spotlightPrediction = appContext.userProfile?.recentPredictions?.find(
+    (prediction) => prediction.fixtureId === homeFeed?.spotlight?.fixture_id
+  );
+
+  const submitFreePrediction = async (predictedResult, predictedLabel) => {
+    const spotlightFixtureId = homeFeed?.spotlight?.fixture_id;
+    if (!spotlightFixtureId) {
+      return;
+    }
+
+    const accessToken = getCookie("access_token");
+    if (!accessToken) {
+      window.location.href = "/signup";
+      return;
+    }
+
+    setIsSubmittingPrediction(true);
+    setPredictionFeedback("");
+
+    try {
+      const response = await fetch("https://service.yolofootball.com/api/predictions", {
+        method: "POST",
+        body: JSON.stringify({
+          fixture_id: spotlightFixtureId,
+          predicted_result: predictedResult,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: accessToken,
+        },
+      });
+      const data = await readJsonSafely(response);
+      if (!response.ok) {
+        setPredictionFeedback("Unable to save your prediction right now.");
+        return;
+      }
+
+      await refreshUserProfile();
+      setPredictionFeedback(
+        `Free prediction saved: ${predictedLabel} for ${homeFeed?.spotlight?.title}.`
+      );
+    } catch (error) {
+      setPredictionFeedback("Unable to save your prediction right now.");
+    } finally {
+      setIsSubmittingPrediction(false);
+    }
   };
 
   const sharePage = async () => {
@@ -565,8 +719,8 @@ function Home() {
                 <h2>Follow teams and leagues you want to see first</h2>
               </div>
               <p className={styles.sectionCopy}>
-                Preferences stay on this device for now, so you can quickly turn the homepage into your own matchday
-                feed.
+                Signed-in users now save follows to their account, while guests can still keep a
+                lighter local version on this device.
               </p>
             </div>
             <div className={styles.preferenceColumns}>
@@ -646,6 +800,61 @@ function Home() {
                   </div>
                 ))}
               </div>
+            </article>
+          </section>
+
+          <section className={styles.predictionPanel}>
+            <article className={styles.predictionCard}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.cardEyebrow}>Free prediction mode</p>
+                  <h2>Make one no-stakes call on today&apos;s spotlight fixture</h2>
+                </div>
+              </div>
+              {homeFeed?.spotlight ? (
+                <>
+                  <p className={styles.predictionCopy}>
+                    Use this as a low-pressure way to join the matchday flow before placing a real
+                    order. Your latest free prediction is saved to your profile.
+                  </p>
+                  <div className={styles.predictionFixture}>
+                    <strong>{homeFeed.spotlight.title}</strong>
+                    <span>
+                      {homeFeed.spotlight.league_name} | {formatKickoff(homeFeed.spotlight.kickoff)}
+                    </span>
+                  </div>
+                  <div className={styles.predictionActions}>
+                    {[
+                      { result: 0, label: "Home" },
+                      { result: 1, label: "Draw" },
+                      { result: 2, label: "Away" },
+                    ].map((option) => (
+                      <button
+                        key={option.label}
+                        type="button"
+                        className={`${styles.predictionButton} ${
+                          spotlightPrediction?.predictedLabel === option.label
+                            ? styles.predictionButtonActive
+                            : ""
+                        }`}
+                        onClick={() => submitFreePrediction(option.result, option.label)}
+                        disabled={isSubmittingPrediction}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  {spotlightPrediction && (
+                    <p className={styles.predictionStatus}>
+                      Latest prediction: {spotlightPrediction.predictedLabel} | Status:{" "}
+                      {spotlightPrediction.result}
+                    </p>
+                  )}
+                  {predictionFeedback && <p className={styles.feedback}>{predictionFeedback}</p>}
+                </>
+              ) : (
+                <p className={styles.predictionCopy}>A spotlight fixture is not available yet.</p>
+              )}
             </article>
           </section>
 

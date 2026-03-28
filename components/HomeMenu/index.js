@@ -95,6 +95,16 @@ function HomeMenu() {
             <h4>Privacy</h4>
           </a>
         </li>
+        <li className={styles.list}>
+          <a href="/terms" onClick={closeMenu}>
+            <h4>Terms</h4>
+          </a>
+        </li>
+        <li className={styles.list}>
+          <a href="/responsible-play" onClick={closeMenu}>
+            <h4>Play Safe</h4>
+          </a>
+        </li>
         {appContext.userProfile && appContext.userProfile.userName && (
           <li className={`${styles.list} ${styles.username}`}>
             <a href="/user" onClick={closeMenu}>

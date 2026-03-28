@@ -18,6 +18,16 @@ const normalizeUserProfile = (profile) => {
     walletId: profile.walletId || null,
     orderCount: Number(profile.orderCount || 0),
     customEventCount: Number(profile.customEventCount || 0),
+    favoriteTeams: Array.isArray(profile.favoriteTeams) ? profile.favoriteTeams : [],
+    favoriteLeagues: Array.isArray(profile.favoriteLeagues) ? profile.favoriteLeagues : [],
+    onboardingState:
+      profile.onboardingState && typeof profile.onboardingState === "object"
+        ? profile.onboardingState
+        : {},
+    predictionCount: Number(profile.predictionCount || 0),
+    recentPredictions: Array.isArray(profile.recentPredictions)
+      ? profile.recentPredictions
+      : [],
     recentOrders: Array.isArray(profile.recentOrders) ? profile.recentOrders : [],
     recentCustomEvents: Array.isArray(profile.recentCustomEvents)
       ? profile.recentCustomEvents

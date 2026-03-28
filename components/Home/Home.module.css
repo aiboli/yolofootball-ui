@@ -57,6 +57,7 @@
 .preferencePanel,
 .starterSlipCard,
 .onboardingCard,
+.predictionCard,
 .guideCard,
 .metricCard,
 .insightCard,
@@ -273,6 +274,59 @@
 .starterSlipCard,
 .onboardingCard {
   padding: 20px;
+}
+
+.predictionPanel {
+  display: grid;
+}
+
+.predictionCard {
+  padding: 20px;
+}
+
+.predictionCopy {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+}
+
+.predictionFixture {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(254, 203, 122, 0.12);
+}
+
+.predictionFixture strong {
+  color: white;
+}
+
+.predictionFixture span,
+.predictionStatus {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.predictionActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.predictionButton {
+  border: 1px solid rgba(254, 203, 122, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.predictionButtonActive {
+  border-color: #fecb7a;
+  background: rgba(254, 203, 122, 0.14);
+  color: #fecb7a;
 }
 
 .starterList {
