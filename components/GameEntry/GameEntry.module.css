@@ -11,7 +11,7 @@
 .gameEntryTitle {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   padding: 10px 10px 6px;
 }
@@ -304,12 +304,12 @@
 }
 
 @media (max-width: 600px) {
+
   .titleBlock {
-    flex-direction: column;
+    align-items: center;
   }
 
   .gameEntryActions {
-    width: 100%;
     justify-content: flex-end;
   }
 
@@ -333,13 +333,6 @@
 
   .modalActions {
     flex-direction: column-reverse;
-  }
-
-  .primaryButton,
-  .secondaryButton,
-  .dangerButton,
-  .modalCloseButton {
-    width: 100%;
   }
 
   .customOddsCardHeader {
