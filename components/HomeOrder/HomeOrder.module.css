@@ -1,40 +1,18 @@
 .userOrderContainer {
-  height: 100%;
-  width: 450px;
-  background-color: #3f5473;
+  width: min(450px, 100%);
+  background: linear-gradient(180deg, #162131 0%, #0c1420 100%);
   border-top: 5px solid #fecb7a;
-  margin: 10px 1px;
-  min-height: 400px;
+  margin: 20px 1px 0;
+  min-height: 220px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
 }
 
 .userOrderContainerMobile {
   width: 100%;
-  background-color: #3f5473;
+  background: linear-gradient(180deg, #162131 0%, #0c1420 100%);
   border-top: 5px solid #fecb7a;
   margin: 10px 1px;
   min-height: 200px;
-}
-
-@media only screen and (max-width: 600px) {
-  .userOrderContainer {
-    position: fixed;
-    width: 66px;
-    height: 66px;
-    border-radius: 50%;
-    bottom: 20%;
-    right: 20%;
-    border: #fecb7a 3px solid;
-    background-color: #3f5473;
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: space-around;
-    min-height: unset;
-  }
-
-  .userOrderContainer h1 {
-    color: #fecb7a;
-  }
 }
 
 .userOrderTitle {
@@ -44,66 +22,79 @@
   justify-content: flex-start;
   background-color: #0c1420;
   color: white;
-  padding: 5px 10px;
+  padding: 12px 14px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(254, 203, 122, 0.16);
 }
 
 .userOrderList {
   padding: 5px 10px;
 }
 
-.userOrderContainer {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-}
-
-.userOrderTitle {
-  font-size: 18px;
-}
-
 .userOrderItem {
   display: flex;
   align-items: center;
-  padding: 4px 0;
-  border-bottom: 1px solid #ddd;
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.userOrderItem:last-child {
+  border-bottom: none;
 }
 
 .userOrderItemLeft {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.userOrderCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.userOrderCopy h5 {
+  margin: 0;
+  font-size: 15px;
+  color: white;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.userOrderCopy p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  word-break: break-word;
 }
 
 .userOrderItemImg {
-  width: 25px;
-  height: 25px;
-  margin-right: 10px;
-  border-radius: 4px;
-}
-
-.userOrderItem h5 {
-  margin: 0;
-  font-size: 16px;
-  color: #ddd;
-}
-
-.userOrderItem p {
-  margin: 0;
-  font-size: 14px;
-  color: #ddd;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .userOrderWin {
   color: #fecb7a;
+  font-weight: 700;
 }
 
 .userOrderStatus {
-  display: inline-block;
-  margin: 4px 0;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  margin: 8px 0;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .userOrderStatusPending {
@@ -119,4 +110,40 @@
 .userOrderStatusLost {
   background-color: rgba(255, 120, 120, 0.18);
   color: #ff8f8f;
+}
+
+@media only screen and (max-width: 900px) {
+  .userOrderContainer {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .userOrderContainer {
+    width: 100%;
+    margin-top: 16px;
+    min-height: unset;
+  }
+
+  .userOrderItem {
+    padding: 12px;
+  }
+
+  .userOrderItemLeft {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .userOrderItemImg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .userOrderCopy h5 {
+    font-size: 14px;
+  }
+
+  .userOrderCopy p {
+    font-size: 12px;
+  }
 }

@@ -93,48 +93,58 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(12, 20, 32, 0.68);
+  background:
+    radial-gradient(circle at top, rgba(254, 203, 122, 0.12), transparent 30%),
+    rgba(5, 8, 15, 0.84);
+  backdrop-filter: blur(6px);
 }
 
 .modalCard {
   width: min(100%, 560px);
   max-height: calc(100vh - 32px);
   overflow-y: auto;
-  background: #f8f2e7;
-  color: #0c1420;
+  background: linear-gradient(180deg, #162131 0%, #0c1420 100%);
+  color: white;
   border-top: 5px solid #fecb7a;
-  padding: 20px;
+  border-left: 1px solid rgba(254, 203, 122, 0.16);
+  border-right: 1px solid rgba(254, 203, 122, 0.16);
+  border-bottom: 1px solid rgba(254, 203, 122, 0.16);
+  padding: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  align-items: flex-start;
 }
 
 .modalHeader h4 {
   margin: 4px 0;
+  color: #fecb7a;
 }
 
 .modalEyebrow {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #6f4c15;
+  color: rgba(254, 203, 122, 0.82);
   font-size: 12px;
 }
 
 .modalSummary {
   margin: 0;
-  color: #44566f;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .modalCloseButton {
-  border: 1px solid #0c1420;
-  background: transparent;
-  color: #0c1420;
+  border: 1px solid rgba(254, 203, 122, 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fecb7a;
   min-width: 36px;
   height: 36px;
+  font-weight: 700;
 }
 
 .customOddsForm {
@@ -145,38 +155,52 @@
 
 .formField {
   display: grid;
-  gap: 6px;
+  gap: 8px;
+}
+
+.formField span {
+  color: rgba(254, 203, 122, 0.86);
+  font-size: 13px;
 }
 
 .formField input {
-  border: 1px solid #c6af86;
-  padding: 10px 12px;
-  background: white;
+  border: 1px solid rgba(254, 203, 122, 0.28);
+  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  outline: none;
+}
+
+.formField input:focus {
+  border-color: #fecb7a;
+  box-shadow: 0 0 0 3px rgba(254, 203, 122, 0.12);
 }
 
 .formError {
   margin: 0;
-  color: #b42318;
+  color: #ff9c9c;
 }
 
 .modalActions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  margin-top: 6px;
 }
 
 .primaryButton {
   border: none;
-  background: #0c1420;
-  color: #fecb7a;
-  padding: 10px 16px;
+  background: #fecb7a;
+  color: #0c1420;
+  padding: 11px 16px;
+  font-weight: 700;
 }
 
 .secondaryButton {
-  border: 1px solid #0c1420;
+  border: 1px solid rgba(254, 203, 122, 0.35);
   background: transparent;
-  color: #0c1420;
-  padding: 10px 16px;
+  color: #fecb7a;
+  padding: 11px 16px;
 }
 
 .customOddsList {
@@ -186,9 +210,10 @@
 }
 
 .customOddsCard {
-  background: white;
+  background: rgba(255, 255, 255, 0.04);
   border-left: 4px solid #fecb7a;
-  padding: 12px;
+  border: 1px solid rgba(254, 203, 122, 0.14);
+  padding: 14px;
 }
 
 .customOddsCardHeader {
@@ -196,7 +221,7 @@
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
-  color: #44566f;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .customOddsOptionRow {
@@ -208,13 +233,17 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid #ece1d0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 8px;
+}
+
+.customOddsOption strong {
+  color: #fecb7a;
 }
 
 .emptyState {
   margin: 0;
-  color: #44566f;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 @media (max-width: 600px) {
@@ -239,5 +268,23 @@
 
   .gameOddButtonGroup button:last-child {
     margin-bottom: 0;
+  }
+
+  .modalCard {
+    padding: 18px;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .modalCloseButton {
+    width: 100%;
+  }
+
+  .customOddsCardHeader {
+    flex-direction: column;
   }
 }

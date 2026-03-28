@@ -174,7 +174,7 @@ function HomeOrder() {
                   alt="order"
                   className={styles.userOrderItemImg}
                 />
-                <div>{renderOrderSummary(item)}</div>
+                <div className={styles.userOrderCopy}>{renderOrderSummary(item)}</div>
               </div>
             </div>
           </div>
