@@ -201,6 +201,23 @@
   line-height: 1.6;
 }
 
+.activityActionRow {
+  margin-top: 12px;
+}
+
+.secondaryActionButton {
+  border: 1px solid rgba(254, 203, 122, 0.35);
+  background: transparent;
+  color: #fecb7a;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.actionError {
+  margin: 10px 0 0;
+  color: #ff8f8f;
+}
+
 .emptyState {
   color: rgba(255, 255, 255, 0.72);
   line-height: 1.7;

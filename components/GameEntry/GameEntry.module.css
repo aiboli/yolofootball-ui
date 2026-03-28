@@ -24,6 +24,11 @@
   width: 100%;
 }
 
+.titleText {
+  display: grid;
+  gap: 4px;
+}
+
 .titleBlock h5 {
   margin: 0;
 }
@@ -32,6 +37,12 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.ownCustomOddsHint {
+  margin: 0;
+  color: rgba(254, 203, 122, 0.8);
+  font-size: 12px;
 }
 
 .customActionButton {
@@ -47,6 +58,10 @@
 .customActionButtonAccent {
   background: #fecb7a;
   color: #0c1420;
+}
+
+.customActionButtonOwned {
+  background: rgba(254, 203, 122, 0.16);
 }
 
 .gameEntrySubTitle {
@@ -181,6 +196,27 @@
   color: #ff9c9c;
 }
 
+.ownEventMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 18px 0 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.confirmPanel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 143, 143, 0.24);
+  background: rgba(122, 24, 24, 0.18);
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.confirmPanel p {
+  margin: 0;
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;
@@ -201,6 +237,14 @@
   background: transparent;
   color: #fecb7a;
   padding: 11px 16px;
+}
+
+.dangerButton {
+  border: none;
+  background: #ff8f8f;
+  color: #341212;
+  padding: 11px 16px;
+  font-weight: 700;
 }
 
 .customOddsList {
@@ -280,6 +324,7 @@
 
   .primaryButton,
   .secondaryButton,
+  .dangerButton,
   .modalCloseButton {
     width: 100%;
   }

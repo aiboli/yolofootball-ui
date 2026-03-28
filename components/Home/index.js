@@ -14,6 +14,7 @@ import { getCookie } from "../../helper/cookieHelper";
 function Home() {
   const [entries, setEntries] = useState([]);
   const [customOddsByFixture, setCustomOddsByFixture] = useState({});
+  const [ownCustomOddsByFixture, setOwnCustomOddsByFixture] = useState({});
   const [loading, setLoading] = useState(true);
   const { appContext, setAppContext } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
@@ -25,6 +26,7 @@ function Home() {
 
     if (fixtureIds.length === 0) {
       setCustomOddsByFixture({});
+      setOwnCustomOddsByFixture({});
       return;
     }
 
@@ -35,6 +37,7 @@ function Home() {
         body: JSON.stringify({
           fixture_ids: fixtureIds,
           status: "active",
+          include_user_context: true,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -45,6 +48,7 @@ function Home() {
 
       if (response.ok) {
         setCustomOddsByFixture(data.events_by_fixture || {});
+        setOwnCustomOddsByFixture(data.own_events_by_fixture || {});
       }
     } catch (error) {
       console.error("Failed to load custom odds", error);
@@ -120,8 +124,9 @@ function Home() {
           fixture={item.fixture}
           league={item.league}
           customEvents={customOddsByFixture[String(item.fixture?.id)] || []}
+          ownCustomEvent={(ownCustomOddsByFixture[String(item.fixture?.id)] || [])[0] || null}
           canCreateCustomOdds={!!appContext.userProfile?.userName}
-          onCustomOddsCreated={() => loadCustomOdds(entries)}
+          onCustomOddsChanged={() => loadCustomOdds(entries)}
         />
       ))
     ) : (

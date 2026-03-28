@@ -142,11 +142,115 @@ const getOddSummary = (oddData) => {
     .join(" | ");
 };
 
+const isCustomEventCancelable = (event) => {
+  const fixtureStatus = event?.fixture?.status;
+  const hasLinkedOrders =
+    Array.isArray(event?.associatedOrderIds) && event.associatedOrderIds.length > 0;
+
+  return (
+    event?.status === "active" &&
+    !hasLinkedOrders &&
+    (fixtureStatus === "NS" || (!fixtureStatus && event?.fixtureState === "notstarted"))
+  );
+};
+
 function UserDashboard() {
   const { appContext, setAppContext } = useContext(AppContext);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [cancelingEventId, setCancelingEventId] = useState("");
+  const [eventActionError, setEventActionError] = useState({
+    eventId: "",
+    message: "",
+  });
   const router = useRouter();
   const profile = appContext.userProfile;
+
+  const loadProfile = async () => {
+    const accessToken = getCookie("access_token");
+    if (!accessToken) {
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userProfile: undefined,
+        isAuthResolved: true,
+      }));
+      router.replace("/login");
+      return false;
+    }
+
+    const response = await fetch("https://service.yolofootball.com/api/users/profile", {
+      method: "GET",
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+    const data = await response.json();
+
+    if (response.ok && data.message === "succeed") {
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userProfile: normalizeUserProfile(data.userProfile),
+        isAuthResolved: true,
+      }));
+      return true;
+    }
+
+    setAppContext((currentContext) => ({
+      ...currentContext,
+      userProfile: undefined,
+      isAuthResolved: true,
+    }));
+    router.replace("/login");
+    return false;
+  };
+
+  const cancelCustomEvent = async (eventId) => {
+    const accessToken = getCookie("access_token");
+    if (!accessToken) {
+      router.replace("/login");
+      return;
+    }
+
+    setCancelingEventId(eventId);
+    setEventActionError({
+      eventId: "",
+      message: "",
+    });
+
+    try {
+      const response = await fetch(
+        `https://service.yolofootball.com/api/events/${eventId}/cancel`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+          },
+        }
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        setEventActionError({
+          eventId,
+          message: data.message || "Unable to cancel custom odds.",
+        });
+        return;
+      }
+
+      await loadProfile();
+      setEventActionError({
+        eventId: "",
+        message: "",
+      });
+    } catch (error) {
+      setEventActionError({
+        eventId,
+        message: "Unable to cancel custom odds.",
+      });
+    } finally {
+      setCancelingEventId("");
+    }
+  };
 
   useEffect(() => {
     if (!appContext.isAuthResolved) {
@@ -161,37 +265,14 @@ function UserDashboard() {
 
     let isMounted = true;
 
-    async function refreshProfile() {
+    async function refreshCurrentProfile() {
       setIsLoadingProfile(true);
 
       try {
-        const response = await fetch("https://service.yolofootball.com/api/users/profile", {
-          method: "GET",
-          headers: {
-            Authorization: accessToken,
-          },
-        });
-        const data = await response.json();
-
-        if (!isMounted) {
+        const isRefreshed = await loadProfile();
+        if (!isMounted || !isRefreshed) {
           return;
         }
-
-        if (response.ok && data.message === "succeed") {
-          setAppContext((currentContext) => ({
-            ...currentContext,
-            userProfile: normalizeUserProfile(data.userProfile),
-            isAuthResolved: true,
-          }));
-          return;
-        }
-
-        setAppContext((currentContext) => ({
-          ...currentContext,
-          userProfile: undefined,
-          isAuthResolved: true,
-        }));
-        router.replace("/login");
       } catch (error) {
         console.error("Failed to refresh user profile", error);
       } finally {
@@ -201,7 +282,7 @@ function UserDashboard() {
       }
     }
 
-    refreshProfile();
+    refreshCurrentProfile();
 
     return () => {
       isMounted = false;
@@ -364,6 +445,23 @@ function UserDashboard() {
                           Orders linked {event.associatedOrderIds.length} | Created{" "}
                           {formatDateTime(event.createdDate)}
                         </p>
+                        {isCustomEventCancelable(event) && (
+                          <div className={styles.activityActionRow}>
+                            <button
+                              type="button"
+                              className={styles.secondaryActionButton}
+                              onClick={() => cancelCustomEvent(event.id)}
+                              disabled={cancelingEventId === event.id}
+                            >
+                              {cancelingEventId === event.id
+                                ? "Canceling..."
+                                : "Cancel custom odd"}
+                            </button>
+                          </div>
+                        )}
+                        {eventActionError.eventId === event.id && eventActionError.message && (
+                          <p className={styles.actionError}>{eventActionError.message}</p>
+                        )}
                       </div>
                     ))}
                   </div>
