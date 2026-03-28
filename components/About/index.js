@@ -137,13 +137,15 @@ function About() {
             <p className={styles.description}>
               yolofootball is being shaped for football fans who want more than a wall of odds.
               Today it already helps users follow fixtures, stack picks, and post custom odds.
-              The next chapters push further into discovery, free interaction, social proof, and
-              personalized matchday experiences that feel lighter than a traditional sportsbook.
+              This page explains the product direction and long-term shape. For day-to-day match
+              context, guides, and club watch cards, the lighter content layer now lives in
+              Insights.
             </p>
             <div className={styles.heroTags}>
               <span>Cleaner match flow</span>
               <span>Community custom odds</span>
               <span>Roadmap built for growth</span>
+              <a href="/insights">Browse insights</a>
             </div>
           </div>
 

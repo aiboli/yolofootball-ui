@@ -84,7 +84,8 @@
   margin-top: 24px;
 }
 
-.heroTags span {
+.heroTags span,
+.heroTags a {
   display: inline-flex;
   align-items: center;
   min-height: 38px;
@@ -93,6 +94,10 @@
   background: rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.88);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.heroTags a {
+  text-decoration: none;
 }
 
 .heroPanel {

@@ -1,7 +1,6 @@
 import styles from "./Home.module.css";
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
-import LeagueMenu from "../LeagueMenu";
 import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
 import HomeOrder from "../HomeOrder";
@@ -70,29 +69,6 @@ const formatKickoff = (value) => {
   });
 };
 
-const formatRecordTime = (value) => {
-  if (!value) {
-    return "Update unavailable";
-  }
-
-  return new Date(value).toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-};
-
-const getStepCompletionMap = ({ userProfile, preferences, selectedEvents }) => ({
-  signup: userProfile?.onboardingState?.signup_completed ?? !!userProfile?.userName,
-  follow:
-    userProfile?.onboardingState?.preferences_completed ??
-    (preferences?.favoriteTeams?.length || 0) + (preferences?.favoriteLeagues?.length || 0) > 0,
-  "starter-slip":
-    userProfile?.onboardingState?.starter_slip_loaded ??
-    (Array.isArray(selectedEvents) && selectedEvents.length > 0),
-});
-
 function Home() {
   const [entries, setEntries] = useState([]);
   const [homeFeed, setHomeFeed] = useState(null);
@@ -100,7 +76,6 @@ function Home() {
   const [ownCustomOddsByFixture, setOwnCustomOddsByFixture] = useState({});
   const [loading, setLoading] = useState(true);
   const [preferences, setPreferences] = useState(getDefaultHomePreferences());
-  const [shareFeedback, setShareFeedback] = useState("");
   const [predictionFeedback, setPredictionFeedback] = useState("");
   const [isSubmittingPrediction, setIsSubmittingPrediction] = useState(false);
   const { appContext, setAppContext, markNotificationRead } = useContext(AppContext);
@@ -235,20 +210,6 @@ function Home() {
     [entries, preferences]
   );
 
-  const stepCompletionMap = getStepCompletionMap({
-    userProfile: appContext.userProfile,
-    preferences,
-    selectedEvents: appContext.selectedEvents,
-  });
-
-  const activeCustomOddCount = Object.values(customOddsByFixture).reduce(
-    (count, currentList) => count + (Array.isArray(currentList) ? currentList.length : 0),
-    0
-  );
-  const sportsdb = homeFeed?.sportsdb || null;
-  const spotlightTeams = Array.isArray(sportsdb?.spotlight_teams) ? sportsdb.spotlight_teams : [];
-  const tableSnapshot = Array.isArray(sportsdb?.table_snapshot) ? sportsdb.table_snapshot : [];
-
   const updatePreferences = (nextPreferences) => {
     setPreferences(nextPreferences);
     saveHomePreferences(nextPreferences);
@@ -373,7 +334,6 @@ function Home() {
         totalWin: calculatePotentialWin(currentContext.order.totalBet, nextSelections),
       },
     }));
-    setShareFeedback("Starter slip loaded into your basket.");
     markOnboardingStep({
       starter_slip_loaded: true,
     }).catch(() => {});
@@ -410,7 +370,6 @@ function Home() {
           Authorization: accessToken,
         },
       });
-      const data = await readJsonSafely(response);
       if (!response.ok) {
         setPredictionFeedback("Unable to save your prediction right now.");
         return;
@@ -427,27 +386,13 @@ function Home() {
     }
   };
 
-  const sharePage = async () => {
-    const shareTitle = "Yolofootball matchday picks";
-    const shareText =
-      "Browse today's football fixtures, starter picks, and custom odds on yolofootball.";
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "https://www.yolofootball.com/";
+  const trendingCustomOdds = Array.isArray(homeFeed?.trending_custom_odds)
+    ? homeFeed.trending_custom_odds.slice(0, 3)
+    : [];
 
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: shareUrl,
-        });
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
-      }
-      setShareFeedback("Share link ready for your friends.");
-    } catch (error) {
-      setShareFeedback("Share was canceled.");
-    }
-  };
+  const starterSelections = Array.isArray(homeFeed?.starter_slip?.selections)
+    ? homeFeed.starter_slip.selections.slice(0, 2)
+    : [];
 
   const entryComponent =
     sortedEntries.length > 0 ? (
@@ -484,15 +429,15 @@ function Home() {
       name: "yolofootball",
       url: "https://www.yolofootball.com",
       description:
-        "Browse football fixtures, follow favorite clubs, build a starter accumulator, and explore custom odds on yolofootball.",
+        "Browse football fixtures, follow favorite clubs, make free predictions, and explore custom odds on yolofootball.",
     },
   ];
 
   return (
     <>
       <SeoHead
-        title="Football picks, starter slips, and custom odds"
-        description="Browse football fixtures, discover beginner-friendly starter slips, follow teams you care about, and explore community custom odds on yolofootball."
+        title="Football picks, alerts, and custom odds"
+        description="Browse football fixtures, follow clubs you care about, make a free prediction, and explore community custom odds on yolofootball."
         path="/"
         schema={homeSchema}
       />
@@ -503,25 +448,40 @@ function Home() {
         </nav>
       </div>
       <div className={styles.content}>
-        <LeagueMenu />
         <div className={styles.games}>
           <section className={styles.hero}>
             <div className={styles.heroCopy}>
               <p className={styles.eyebrow}>Matchday made simple</p>
-              <h1 className={styles.pageTitle}>A football homepage that teaches, guides, and lets you play</h1>
+              <h1 className={styles.pageTitle}>Start with today&apos;s spotlight, then move straight into the board.</h1>
               <p className={styles.pageDescription}>
-                Start with today&apos;s spotlight fixture, load an example accumulator, follow the clubs you care
-                about, and then move naturally into picks, orders, and custom odds.
+                yolofootball keeps the homepage focused on what helps you act now: one guided slip,
+                one quick prediction, your unread alerts, and the fixtures worth checking next.
               </p>
               <div className={styles.heroActions}>
                 <button className={styles.primaryButton} type="button" onClick={applyStarterSlip}>
                   Load starter slip
                 </button>
-                <button className={styles.secondaryButton} type="button" onClick={sharePage}>
-                  Share matchday page
-                </button>
+                <a href="/insights" className={styles.secondaryButton}>
+                  Explore insights
+                </a>
               </div>
-              {shareFeedback && <p className={styles.feedback}>{shareFeedback}</p>}
+              {(starterSelections.length > 0 || homeFeed?.starter_slip?.combined_odd) && (
+                <div className={styles.heroSummary}>
+                  {homeFeed?.starter_slip?.combined_odd && (
+                    <span className={styles.heroSummaryItem}>
+                      Combined odd {homeFeed.starter_slip.combined_odd}
+                    </span>
+                  )}
+                  {starterSelections.map((selection) => (
+                    <span
+                      key={`${selection.fixture_id}-${selection.selection}`}
+                      className={styles.heroSummaryItem}
+                    >
+                      {selection.selection} in {selection.home_team} vs {selection.away_team}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             {homeFeed?.spotlight && (
               <article className={styles.spotlightCard}>
@@ -543,210 +503,102 @@ function Home() {
             )}
           </section>
 
-          <section className={styles.notificationPanelSection}>
-            <NotificationsPanel
-              title="Matchday action center"
-              description={
-                appContext.userProfile?.userName
-                  ? "Unread alerts from your follows, predictions, orders, and custom odds appear here first."
-                  : "Sign in to see kickoff reminders, prediction results, and settlement updates here."
-              }
-              notifications={appContext.notifications}
-              emptyTitle={
-                appContext.userProfile?.userName
-                  ? "You are all caught up."
-                  : "No alerts yet."
-              }
-              emptyDescription={
-                appContext.userProfile?.userName
-                  ? "New activity will show up here as followed fixtures approach kickoff or your actions settle."
-                  : "Create an account, follow a few clubs, and your action center will start filling in."
-              }
-              limit={3}
-              isBusy={appContext.isNotificationsBusy}
-              onMarkRead={appContext.userProfile?.userName ? markNotificationRead : undefined}
-            />
-          </section>
-
-          {sportsdb && (
-            <section className={styles.clubWatchSection}>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <p className={styles.cardEyebrow}>Club watch</p>
-                  <h2>Spotlight clubs and a quick EPL table read</h2>
-                </div>
-                <p className={styles.sectionCopy}>
-                  Shared Premier League context refreshed hourly from TheSportsDB so the homepage can
-                  add club storylines without changing the core fixture board.
-                </p>
+          <section className={styles.actionCenterSection}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.cardEyebrow}>Action center</p>
+                <h2>See what needs attention, then make one light matchday move.</h2>
               </div>
-              <div className={styles.clubWatchGrid}>
-                <div className={styles.clubWatchCards}>
-                  {spotlightTeams.length > 0 ? (
-                    spotlightTeams.map((team) => (
-                      <article
-                        key={`${team.fixture_id}-${team.side}`}
-                        className={styles.clubWatchCard}
-                        style={{
-                          "--club-accent": team.team_colors?.[0] || "#fecb7a",
-                        }}
-                      >
-                        <div className={styles.clubWatchHeader}>
-                          <div className={styles.clubWatchIdentity}>
-                            {team.team_badge ? (
-                              <img src={team.team_badge} alt={team.team_name} className={styles.clubBadge} />
-                            ) : (
-                              <div className={styles.clubBadgeFallback} aria-hidden="true"></div>
-                            )}
-                            <div>
-                              <p className={styles.cardEyebrow}>
-                                {team.side === "home" ? "Home club" : "Away club"}
-                              </p>
-                              <h3>{team.team_name}</h3>
-                            </div>
-                          </div>
-                          {team.table?.rank && (
-                            <span className={styles.rankPill}>EPL #{team.table.rank}</span>
-                          )}
-                        </div>
-                        <p className={styles.clubMeta}>
-                          {team.location || "Location unavailable"}
-                          {team.stadium ? ` | ${team.stadium}` : ""}
-                        </p>
-                        {team.description_excerpt && (
-                          <p className={styles.clubDescription}>{team.description_excerpt}</p>
-                        )}
-                        {team.keywords?.length > 0 && (
-                          <div className={styles.keywordList}>
-                            {team.keywords.slice(0, 4).map((keyword) => (
-                              <span key={`${team.team_name}-${keyword}`} className={styles.keywordChip}>
-                                {keyword}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        <div className={styles.clubStatsRow}>
-                          <span>Points: {team.table?.points ?? "-"}</span>
-                          <span>Played: {team.table?.played ?? "-"}</span>
-                          <span>GD: {team.table?.goal_difference ?? "-"}</span>
-                          <span>Form: {team.table?.form || "-"}</span>
-                        </div>
-                        <div className={styles.eventPair}>
-                          <article className={styles.eventMiniCard}>
-                            <p className={styles.cardEyebrow}>Last match</p>
-                            {team.last_event ? (
-                              <>
-                                <h4>{team.last_event.event_name}</h4>
-                                <p>{formatKickoff(team.last_event.timestamp || team.last_event.date)}</p>
-                                <p>
-                                  {team.last_event.home_score ?? "-"} - {team.last_event.away_score ?? "-"} |{" "}
-                                  {team.last_event.status || "Status unavailable"}
-                                </p>
-                              </>
-                            ) : (
-                              <p>No recent match available.</p>
-                            )}
-                          </article>
-                          <article className={styles.eventMiniCard}>
-                            <p className={styles.cardEyebrow}>Next match</p>
-                            {team.next_event ? (
-                              <>
-                                <h4>{team.next_event.event_name}</h4>
-                                <p>{formatKickoff(team.next_event.timestamp || team.next_event.date)}</p>
-                                <p>{team.next_event.status || "Kickoff pending"}</p>
-                              </>
-                            ) : (
-                              <p>No upcoming match available.</p>
-                            )}
-                          </article>
-                        </div>
-                      </article>
-                    ))
-                  ) : (
-                    <article className={styles.clubWatchEmpty}>
-                      <p className={styles.cardEyebrow}>Club watch</p>
-                      <h3>Club details are temporarily unavailable</h3>
-                      <p>
-                        The matchday feed is still live. We just do not have the latest TheSportsDB
-                        enrichment for the current spotlight fixture yet.
-                      </p>
-                    </article>
-                  )}
-                </div>
-                <article className={styles.tableSnapshotCard}>
-                  <div className={styles.tableSnapshotHeader}>
-                    <div>
-                      <p className={styles.cardEyebrow}>Table snapshot</p>
-                      <h3>Current EPL top five</h3>
+              <p className={styles.sectionCopy}>
+                Alerts keep your follows visible, while the compact prediction card gives casual
+                fans one low-pressure way to participate.
+              </p>
+            </div>
+            <div className={styles.actionCenterGrid}>
+              <NotificationsPanel
+                title="Unread matchday alerts"
+                description={
+                  appContext.userProfile?.userName
+                    ? "Kickoff reminders, prediction results, order settlements, and custom odds updates show up here first."
+                    : "Sign in to turn follows, predictions, and order activity into readable alerts."
+                }
+                notifications={appContext.notifications}
+                emptyTitle={
+                  appContext.userProfile?.userName
+                    ? "You are all caught up."
+                    : "No alerts yet."
+                }
+                emptyDescription={
+                  appContext.userProfile?.userName
+                    ? "New activity will land here as matches approach kickoff or your recent actions settle."
+                    : "Create an account and follow a few teams to start seeing alerts here."
+                }
+                limit={3}
+                isBusy={appContext.isNotificationsBusy}
+                onMarkRead={appContext.userProfile?.userName ? markNotificationRead : undefined}
+              />
+              <article className={styles.predictionCard}>
+                <p className={styles.cardEyebrow}>Free prediction</p>
+                <h3>
+                  {homeFeed?.spotlight?.title || "Make a quick no-stakes matchday call"}
+                </h3>
+                <p className={styles.predictionCopy}>
+                  Keep it simple: one fixture, three choices, and your latest pick saved to your
+                  profile.
+                </p>
+                {homeFeed?.spotlight ? (
+                  <>
+                    <div className={styles.predictionFixture}>
+                      <strong>{homeFeed.spotlight.title}</strong>
+                      <span>
+                        {homeFeed.spotlight.league_name} | {formatKickoff(homeFeed.spotlight.kickoff)}
+                      </span>
                     </div>
-                    <span className={styles.tableStatus}>
-                      {sportsdb.status === "healthy"
-                        ? "Healthy"
-                        : sportsdb.status === "partial"
-                          ? "Partial"
-                          : "Unavailable"}
-                    </span>
-                  </div>
-                  <p className={styles.cardMeta}>Cached {formatRecordTime(sportsdb.cached_at)}</p>
-                  {tableSnapshot.length > 0 ? (
-                    <div className={styles.tableList}>
-                      {tableSnapshot.map((team) => (
-                        <div
-                          key={`${team.team_id_api_football || team.team_name}-${team.rank}`}
-                          className={styles.tableRow}
+                    <div className={styles.predictionActions}>
+                      {[
+                        { result: 0, label: "Home" },
+                        { result: 1, label: "Draw" },
+                        { result: 2, label: "Away" },
+                      ].map((option) => (
+                        <button
+                          key={option.label}
+                          type="button"
+                          className={`${styles.predictionButton} ${
+                            spotlightPrediction?.predictedLabel === option.label
+                              ? styles.predictionButtonActive
+                              : ""
+                          }`}
+                          onClick={() => submitFreePrediction(option.result, option.label)}
+                          disabled={isSubmittingPrediction}
                         >
-                          <div className={styles.tableTeam}>
-                            {team.team_badge ? (
-                              <img src={team.team_badge} alt={team.team_name} className={styles.tableBadge} />
-                            ) : (
-                              <div className={styles.tableBadgeFallback} aria-hidden="true"></div>
-                            )}
-                            <div>
-                              <strong>
-                                #{team.rank} {team.team_name}
-                              </strong>
-                              <p>{team.note || "League position update"}</p>
-                            </div>
-                          </div>
-                          <div className={styles.tableMetrics}>
-                            <span>{team.points} pts</span>
-                            <span>{team.played} played</span>
-                            <span>GD {team.goal_difference}</span>
-                            <span>{team.form || "-"}</span>
-                          </div>
-                        </div>
+                          {option.label}
+                        </button>
                       ))}
                     </div>
-                  ) : (
-                    <p className={styles.tableEmptyState}>
-                      Table data is not available right now, but the fixture feed and custom odds are
-                      still ready to browse.
-                    </p>
-                  )}
-                </article>
-              </div>
-            </section>
-          )}
-
-          <section className={styles.insightGrid}>
-            {homeFeed?.content_cards?.map((item) => (
-              <article className={styles.insightCard} key={item.id}>
-                <p className={styles.cardEyebrow}>{item.eyebrow}</p>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+                    {spotlightPrediction && (
+                      <p className={styles.predictionStatus}>
+                        Latest prediction: {spotlightPrediction.predictedLabel} | Status:{" "}
+                        {spotlightPrediction.result}
+                      </p>
+                    )}
+                    {predictionFeedback && <p className={styles.feedback}>{predictionFeedback}</p>}
+                  </>
+                ) : (
+                  <p className={styles.predictionCopy}>A spotlight fixture is not available yet.</p>
+                )}
               </article>
-            ))}
+            </div>
           </section>
 
           <section className={styles.preferencePanel} id="follow">
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.cardEyebrow}>Personalize</p>
-                <h2>Follow teams and leagues you want to see first</h2>
+                <h2>Follow teams and leagues you want to surface first.</h2>
               </div>
               <p className={styles.sectionCopy}>
-                Signed-in users now save follows to their account, while guests can still keep a
-                lighter local version on this device.
+                Signed-in users save follows to their account, while guests can keep a lighter local
+                version on this device.
               </p>
             </div>
             <div className={styles.preferenceColumns}>
@@ -787,142 +639,20 @@ function Home() {
             </div>
           </section>
 
-          <section className={styles.guideRail} id="starter-slip">
-            <article className={styles.starterSlipCard}>
-              <p className={styles.cardEyebrow}>Starter slip</p>
-              <h3>{homeFeed?.starter_slip?.title || "Starter accumulator"}</h3>
-              <p>{homeFeed?.starter_slip?.summary}</p>
-              <ul className={styles.starterList}>
-                {(homeFeed?.starter_slip?.selections || []).map((selection) => (
-                  <li key={`${selection.fixture_id}-${selection.selection}`}>
-                    {selection.home_team} vs {selection.away_team} | {selection.selection} @ {selection.odd_rate}
-                  </li>
-                ))}
-              </ul>
-              <div className={styles.starterFooter}>
-                <span>Combined odd: {homeFeed?.starter_slip?.combined_odd || "0.00"}</span>
-                <button className={styles.primaryButton} type="button" onClick={applyStarterSlip}>
-                  Add to basket
-                </button>
-              </div>
-            </article>
-            <article className={styles.onboardingCard}>
-              <p className={styles.cardEyebrow}>New user path</p>
-              <h3>Complete one simple action at a time</h3>
-              <div className={styles.stepList}>
-                {(homeFeed?.onboarding_steps || []).map((step) => (
-                  <div className={styles.stepItem} key={step.id}>
-                    <div className={styles.stepTitleRow}>
-                      <strong>{step.title}</strong>
-                      <span
-                        className={`${styles.stepBadge} ${
-                          stepCompletionMap[step.id] ? styles.stepBadgeDone : ""
-                        }`}
-                      >
-                        {stepCompletionMap[step.id] ? "Done" : "Next"}
-                      </span>
-                    </div>
-                    <p>{step.description}</p>
-                  </div>
-                ))}
-              </div>
-            </article>
-          </section>
-
-          <section className={styles.predictionPanel}>
-            <article className={styles.predictionCard}>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <p className={styles.cardEyebrow}>Free prediction mode</p>
-                  <h2>Make one no-stakes call on today&apos;s spotlight fixture</h2>
-                </div>
-              </div>
-              {homeFeed?.spotlight ? (
-                <>
-                  <p className={styles.predictionCopy}>
-                    Use this as a low-pressure way to join the matchday flow before placing a real
-                    order. Your latest free prediction is saved to your profile.
-                  </p>
-                  <div className={styles.predictionFixture}>
-                    <strong>{homeFeed.spotlight.title}</strong>
-                    <span>
-                      {homeFeed.spotlight.league_name} | {formatKickoff(homeFeed.spotlight.kickoff)}
-                    </span>
-                  </div>
-                  <div className={styles.predictionActions}>
-                    {[
-                      { result: 0, label: "Home" },
-                      { result: 1, label: "Draw" },
-                      { result: 2, label: "Away" },
-                    ].map((option) => (
-                      <button
-                        key={option.label}
-                        type="button"
-                        className={`${styles.predictionButton} ${
-                          spotlightPrediction?.predictedLabel === option.label
-                            ? styles.predictionButtonActive
-                            : ""
-                        }`}
-                        onClick={() => submitFreePrediction(option.result, option.label)}
-                        disabled={isSubmittingPrediction}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                  {spotlightPrediction && (
-                    <p className={styles.predictionStatus}>
-                      Latest prediction: {spotlightPrediction.predictedLabel} | Status:{" "}
-                      {spotlightPrediction.result}
-                    </p>
-                  )}
-                  {predictionFeedback && <p className={styles.feedback}>{predictionFeedback}</p>}
-                </>
-              ) : (
-                <p className={styles.predictionCopy}>A spotlight fixture is not available yet.</p>
-              )}
-            </article>
-          </section>
-
-          <section className={styles.insightGrid}>
-            <article className={styles.metricCard}>
-              <p className={styles.cardEyebrow}>Today</p>
-              <h3>{entries.length}</h3>
-              <p>fixtures ready to browse right now</p>
-            </article>
-            <article className={styles.metricCard}>
-              <p className={styles.cardEyebrow}>Community</p>
-              <h3>{activeCustomOddCount}</h3>
-              <p>active custom odds posts across the current matchday feed</p>
-            </article>
-            <article className={styles.metricCard}>
-              <p className={styles.cardEyebrow}>Learn</p>
-              <h3>{homeFeed?.beginner_guides?.length || 0}</h3>
-              <p>starter guides to help casual fans understand how to play</p>
-            </article>
-          </section>
-
-          <section className={styles.guideGrid}>
-            {(homeFeed?.beginner_guides || []).map((guide) => (
-              <article className={styles.guideCard} key={guide.id}>
-                <p className={styles.cardEyebrow}>Beginner guide</p>
-                <h3>{guide.title}</h3>
-                <p>{guide.description}</p>
-                <span className={styles.guideCta}>{guide.cta_label}</span>
-              </article>
-            ))}
-          </section>
-
-          {(homeFeed?.trending_custom_odds?.length || 0) > 0 && (
+          {trendingCustomOdds.length > 0 && (
             <section className={styles.trendingPanel}>
               <div className={styles.sectionHeader}>
                 <div>
-                  <p className={styles.cardEyebrow}>Trending now</p>
-                  <h2>Fixtures with the most community custom odds</h2>
+                  <p className={styles.cardEyebrow}>Trending custom odds</p>
+                  <h2>See where community pricing is already heating up.</h2>
                 </div>
+                <p className={styles.sectionCopy}>
+                  We keep this short on the homepage so you can sense momentum without losing the
+                  main fixture board.
+                </p>
               </div>
               <div className={styles.trendingGrid}>
-                {homeFeed.trending_custom_odds.map((item) => (
+                {trendingCustomOdds.map((item) => (
                   <article className={styles.trendingCard} key={item.fixture_id}>
                     <h3>{item.title}</h3>
                     <p className={styles.cardMeta}>
@@ -939,10 +669,11 @@ function Home() {
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.cardEyebrow}>Recommended fixtures</p>
-                <h2>Upcoming matches, sorted around your preferences when available</h2>
+                <h2>Upcoming matches, sorted around your preferences when available.</h2>
               </div>
               <p className={styles.sectionCopy}>
-                We surface followed clubs and leagues first, then fall back to kickoff order for the rest of the board.
+                Followed clubs and leagues surface first, then the rest of the board falls back to
+                kickoff order.
               </p>
             </div>
             {loading && <Loader />}

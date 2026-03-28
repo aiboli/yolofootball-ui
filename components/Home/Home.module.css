@@ -122,6 +122,10 @@
 .secondaryButton,
 .chipButton {
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
@@ -194,6 +198,7 @@
 }
 
 .preferencePanel,
+.actionCenterSection,
 .clubWatchSection,
 .notificationPanelSection,
 .trendingPanel,
@@ -228,6 +233,29 @@
 
 .sectionCopy {
   max-width: 360px;
+}
+
+.actionCenterGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.9fr);
+  gap: 14px;
+}
+
+.heroSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.heroSummaryItem {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 12px;
 }
 
 .preferenceColumns {
@@ -585,6 +613,7 @@
 
 @media only screen and (max-width: 1100px) {
   .hero,
+  .actionCenterGrid,
   .guideRail,
   .insightGrid,
   .guideGrid,
@@ -637,6 +666,7 @@
 
   .heroCopy,
   .spotlightCard,
+  .predictionCard,
   .starterSlipCard,
   .onboardingCard,
   .guideCard,

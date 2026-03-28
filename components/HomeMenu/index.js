@@ -125,6 +125,11 @@ function HomeMenu() {
         id="home-navigation-menu"
       >
         <li className={styles.list}>
+          <a href="/insights" onClick={closeMenu}>
+            <h4>Insights</h4>
+          </a>
+        </li>
+        <li className={styles.list}>
           <a href="/about" onClick={closeMenu}>
             <h4>About</h4>
           </a>
