@@ -1,3 +1,7 @@
+.homemenu {
+  position: relative;
+}
+
 .listcontainer {
   display: flex;
   justify-content: center;
@@ -9,6 +13,48 @@
   list-style-type: none;
   height: 100%;
   gap: 6px;
+}
+
+.burgerButton {
+  display: none;
+  border: 1px solid rgba(254, 203, 122, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fecb7a;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.burgerButton:hover {
+  background: rgba(254, 203, 122, 0.12);
+  border-color: rgba(254, 203, 122, 0.5);
+  transform: translateY(-1px);
+}
+
+.burgerLine {
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.burgerButtonOpen .burgerLine:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.burgerButtonOpen .burgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.burgerButtonOpen .burgerLine:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .list {
@@ -41,21 +87,66 @@
 }
 
 @media only screen and (max-width: 600px) {
-  .listcontainer {
+  .homemenu {
+    margin-left: auto;
+    display: flex;
     justify-content: flex-end;
-    gap: 4px;
+    align-items: center;
+  }
+
+  .burgerButton {
+    display: inline-flex;
+    position: relative;
+    z-index: 3;
+    margin-right: 8px;
+  }
+
+  .listcontainer {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 8px;
+    min-width: min(220px, calc(100vw - 24px));
+    height: auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid rgba(254, 203, 122, 0.24);
+    background: rgba(12, 20, 32, 0.98);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 2;
+  }
+
+  .listcontainerOpen {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .list {
-    min-width: 62px;
-    height: 100%;
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    flex: none;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .list a {
+    display: block;
+    padding: 10px 14px;
   }
 
   .list.username {
-    max-width: 120px;
+    max-width: unset;
   }
 
   .list h4 {
-    font-size: 12px;
+    margin: 0;
+    font-size: 14px;
   }
 }
