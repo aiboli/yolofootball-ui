@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AppContext from "./AppContext";
 import { getCookie } from "./cookieHelper";
+import normalizeUserProfile from "./normalizeUserProfile";
 
 const initialAppContext = {
   leagues: [],
@@ -17,6 +18,7 @@ const initialAppContext = {
     orders: [],
   },
   isBusy: false,
+  isAuthResolved: false,
 };
 
 export default function AppContextProvider({ children }) {
@@ -29,6 +31,12 @@ export default function AppContextProvider({ children }) {
       const accessToken = getCookie("access_token");
 
       if (!accessToken) {
+        if (isMounted) {
+          setAppContext((currentContext) => ({
+            ...currentContext,
+            isAuthResolved: true,
+          }));
+        }
         return;
       }
 
@@ -44,25 +52,38 @@ export default function AppContextProvider({ children }) {
         );
         const data = await res.json();
 
-        if (!isMounted || (data && data.message === "unauth")) {
+        if (!isMounted) {
           return;
         }
 
         if (data && data.message === "succeed") {
           setAppContext((currentContext) => ({
             ...currentContext,
-            userProfile: {
-              userName: data.userProfile.userName,
-              userEmail: data.userProfile.userEmail,
-              userId: data.userProfile.userId,
-              userOrderIds: data.userProfile.userOrderIds,
-              userCreatedBidIds: data.userProfile.userCreatedBidIds,
-              userBalance: data.userProfile.userBalance,
-            },
+            userProfile: normalizeUserProfile(data.userProfile),
+            isAuthResolved: true,
+          }));
+        } else if (data && data.message === "unauth") {
+          setAppContext((currentContext) => ({
+            ...currentContext,
+            userProfile: undefined,
+            isAuthResolved: true,
+          }));
+        } else if (isMounted) {
+          setAppContext((currentContext) => ({
+            ...currentContext,
+            userProfile: undefined,
+            isAuthResolved: true,
           }));
         }
       } catch (error) {
         console.error("Failed to load user profile", error);
+        if (isMounted) {
+          setAppContext((currentContext) => ({
+            ...currentContext,
+            userProfile: undefined,
+            isAuthResolved: true,
+          }));
+        }
       }
     }
     checkAuth();

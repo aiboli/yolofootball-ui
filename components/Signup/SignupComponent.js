@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./SignupComponent.module.css";
+import normalizeUserProfile from "../../helper/normalizeUserProfile";
 
 const SignupComponent = () => {
   const [userName, setUserName] = useState("");
@@ -37,7 +38,8 @@ const SignupComponent = () => {
       setCookie("access_token", data.accessToken, 7);
       setAppContext((currentContext) => ({
         ...currentContext,
-        userProfile: data.userProfile,
+        userProfile: normalizeUserProfile(data.userProfile),
+        isAuthResolved: true,
       }));
       router.push("/");
     } else {

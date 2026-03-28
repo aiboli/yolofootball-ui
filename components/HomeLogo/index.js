@@ -4,7 +4,7 @@ function HomeLogo() {
   return (
     <div className={styles.homelogo}>
       <a className={styles.homelogolink} href="/">
-        <img className={styles.logo} src="./assets/logo/logo.png"></img>
+        <img className={styles.logo} src="/assets/logo/logo.png"></img>
         <h2 className={styles.title}>Yolofootball</h2>
       </a>
     </div>

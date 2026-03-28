@@ -14,6 +14,7 @@ function HomeMenu() {
     setAppContext((currentContext) => ({
       ...currentContext,
       userProfile: undefined,
+      isAuthResolved: true,
       userActiveOrder: {
         orders: [],
       },
