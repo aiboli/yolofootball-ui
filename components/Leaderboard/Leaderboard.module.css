@@ -1,0 +1,157 @@
+.header {
+  width: 100%;
+  min-height: 80px;
+  background-color: #0c1420;
+  color: #fecb7a;
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  min-height: calc(100vh - 180px);
+  padding: 28px 18px 56px;
+  color: white;
+  background:
+    radial-gradient(circle at top left, rgba(254, 203, 122, 0.1), transparent 28%),
+    linear-gradient(180deg, #050a10 0%, #0b1320 100%);
+}
+
+.hero,
+.boardGrid {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.eyebrow,
+.cardEyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(254, 203, 122, 0.82);
+  font-size: 12px;
+}
+
+.hero h1,
+.boardHeader h2 {
+  margin: 0 0 12px;
+  color: #fecb7a;
+}
+
+.heroCopy,
+.emptyState,
+.entryItem p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+}
+
+.viewerCard,
+.boardCard {
+  border: 1px solid rgba(254, 203, 122, 0.14);
+  border-top: 5px solid #fecb7a;
+  background: linear-gradient(180deg, rgba(17, 28, 43, 0.98) 0%, rgba(10, 18, 30, 0.98) 100%);
+  color: white;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.viewerCard h3 {
+  margin: 0 0 12px;
+}
+
+.viewerStats,
+.entryMetrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.viewerStats span,
+.entryMetrics span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(254, 203, 122, 0.14);
+  color: #fecb7a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.boardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.boardHeader {
+  margin-bottom: 14px;
+}
+
+.entryList {
+  display: grid;
+  gap: 12px;
+}
+
+.entryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(254, 203, 122, 0.12);
+}
+
+.entryItem strong {
+  color: white;
+}
+
+.loaderWrap {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 980px) {
+  .hero,
+  .boardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .entryItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .header {
+    min-height: unset;
+    padding: 8px;
+  }
+
+  .content {
+    padding: 18px 10px 40px;
+  }
+
+  .viewerCard,
+  .boardCard {
+    padding: 16px;
+  }
+}

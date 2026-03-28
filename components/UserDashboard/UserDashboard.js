@@ -176,6 +176,7 @@ function UserDashboard() {
   } = useContext(AppContext);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [cancelingEventId, setCancelingEventId] = useState("");
+  const [viewerLeaderboardEntry, setViewerLeaderboardEntry] = useState(null);
   const [eventActionError, setEventActionError] = useState({
     eventId: "",
     message: "",
@@ -219,6 +220,32 @@ function UserDashboard() {
     }));
     router.replace("/login");
     return false;
+  };
+
+  const loadViewerLeaderboardEntry = async () => {
+    const accessToken = getCookie("access_token");
+    if (!accessToken) {
+      setViewerLeaderboardEntry(null);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://service.yolofootball.com/api/predictions/leaderboard",
+        {
+          method: "GET",
+          headers: {
+            Authorization: accessToken,
+          },
+        }
+      );
+      const data = await readJsonSafely(response);
+      if (response.ok) {
+        setViewerLeaderboardEntry(data?.viewerEntry || null);
+      }
+    } catch (error) {
+      console.error("Failed to load viewer leaderboard entry", error);
+    }
   };
 
   const cancelCustomEvent = async (eventId) => {
@@ -291,6 +318,7 @@ function UserDashboard() {
         if (!isMounted || !isRefreshed) {
           return;
         }
+        await loadViewerLeaderboardEntry();
       } catch (error) {
         console.error("Failed to refresh user profile", error);
       } finally {
@@ -309,6 +337,14 @@ function UserDashboard() {
 
   const shouldShowLoader =
     !appContext.isAuthResolved || (isLoadingProfile && !profile);
+  const predictionSummary = profile?.predictionSummary || {
+    accuracy: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    settledPredictions: 0,
+    weeklyWins: 0,
+    weeklyAccuracy: 0,
+  };
 
   return (
     <>
@@ -413,6 +449,44 @@ function UserDashboard() {
               <article className={styles.statCard}>
                 <span className={styles.label}>Free predictions</span>
                 <p className={styles.statValue}>{profile.predictionCount}</p>
+              </article>
+            </section>
+
+            <section className={styles.predictionSummarySection}>
+              <article className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <h2>Prediction momentum</h2>
+                  <a href="/leaderboard" className={styles.secondaryLink}>
+                    Open leaderboard
+                  </a>
+                </div>
+                <div className={styles.predictionSummaryGrid}>
+                  <div className={styles.summaryMetric}>
+                    <span className={styles.label}>Accuracy</span>
+                    <strong>{predictionSummary.accuracy}%</strong>
+                    <p>{predictionSummary.settledPredictions} settled predictions</p>
+                  </div>
+                  <div className={styles.summaryMetric}>
+                    <span className={styles.label}>Current streak</span>
+                    <strong>{predictionSummary.currentStreak}W</strong>
+                    <p>Wins in a row right now</p>
+                  </div>
+                  <div className={styles.summaryMetric}>
+                    <span className={styles.label}>Best streak</span>
+                    <strong>{predictionSummary.bestStreak}W</strong>
+                    <p>Your longest run so far</p>
+                  </div>
+                  <div className={styles.summaryMetric}>
+                    <span className={styles.label}>Weekly form</span>
+                    <strong>{predictionSummary.weeklyWins} wins</strong>
+                    <p>{predictionSummary.weeklyAccuracy}% weekly accuracy</p>
+                  </div>
+                </div>
+                <p className={styles.predictionSummaryNote}>
+                  {viewerLeaderboardEntry?.rank
+                    ? `Current leaderboard rank: #${viewerLeaderboardEntry.rank}.`
+                    : "Keep making settled predictions to climb onto the public board."}
+                </p>
               </article>
             </section>
 

@@ -130,6 +130,11 @@ function HomeMenu() {
           </a>
         </li>
         <li className={styles.list}>
+          <a href="/leaderboard" onClick={closeMenu}>
+            <h4>Leaderboard</h4>
+          </a>
+        </li>
+        <li className={styles.list}>
           <a href="/about" onClick={closeMenu}>
             <h4>About</h4>
           </a>

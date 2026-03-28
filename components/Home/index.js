@@ -79,6 +79,10 @@ function Home() {
   const [preferences, setPreferences] = useState(getDefaultHomePreferences());
   const [predictionFeedback, setPredictionFeedback] = useState("");
   const [isSubmittingPrediction, setIsSubmittingPrediction] = useState(false);
+  const [leaderboardPreview, setLeaderboardPreview] = useState({
+    leaderboard: [],
+    hotThisWeek: [],
+  });
   const { appContext, setAppContext, markNotificationRead } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
 
@@ -204,6 +208,40 @@ function Home() {
     loadCustomOdds(entries).catch((error) => {
       console.error("Failed to refresh custom odds", error);
     });
+  }, [appContext.userProfile?.userName]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadLeaderboardPreview() {
+      try {
+        const response = await fetch("https://service.yolofootball.com/api/predictions/leaderboard", {
+          method: "GET",
+          headers: {
+            ...(getCookie("access_token")
+              ? { Authorization: getCookie("access_token") }
+              : {}),
+          },
+        });
+        const data = await readJsonSafely(response);
+        if (!response.ok || !isMounted) {
+          return;
+        }
+
+        setLeaderboardPreview({
+          leaderboard: Array.isArray(data?.leaderboard) ? data.leaderboard.slice(0, 3) : [],
+          hotThisWeek: Array.isArray(data?.hotThisWeek) ? data.hotThisWeek.slice(0, 3) : [],
+        });
+      } catch (error) {
+        console.error("Failed to load leaderboard preview", error);
+      }
+    }
+
+    loadLeaderboardPreview();
+
+    return () => {
+      isMounted = false;
+    };
   }, [appContext.userProfile?.userName]);
 
   const sortedEntries = useMemo(
@@ -390,6 +428,8 @@ function Home() {
   const trendingCustomOdds = Array.isArray(homeFeed?.trending_custom_odds)
     ? homeFeed.trending_custom_odds.slice(0, 3)
     : [];
+  const leaderboardEntries = leaderboardPreview.leaderboard || [];
+  const hotPlayers = leaderboardPreview.hotThisWeek || [];
 
   const starterSelections = Array.isArray(homeFeed?.starter_slip?.selections)
     ? homeFeed.starter_slip.selections.slice(0, 2)
@@ -665,6 +705,85 @@ function Home() {
               </div>
             </section>
           )}
+
+          <section className={styles.leaderboardSection}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.cardEyebrow}>Prediction leaderboard</p>
+                <h2>See who is calling results well and who is running hot this week.</h2>
+              </div>
+              <p className={styles.sectionCopy}>
+                Free prediction is now more than a side action. Accuracy and streaks give players a
+                reason to come back and keep their run going.
+              </p>
+            </div>
+            <div className={styles.leaderboardGrid}>
+              <article className={styles.leaderboardCard}>
+                <div className={styles.leaderboardHeader}>
+                  <h3>Top accuracy</h3>
+                  <a href="/leaderboard" className={styles.secondaryButton}>
+                    Full board
+                  </a>
+                </div>
+                {leaderboardEntries.length > 0 ? (
+                  <div className={styles.rankList}>
+                    {leaderboardEntries.map((entry) => (
+                      <div key={`${entry.userName}-${entry.rank}`} className={styles.rankItem}>
+                        <div>
+                          <strong>
+                            #{entry.rank} {entry.userName}
+                          </strong>
+                          <p>
+                            Accuracy {entry.predictionSummary.accuracy}% | Settled{" "}
+                            {entry.predictionSummary.settledPredictions}
+                          </p>
+                        </div>
+                        <span className={styles.rankBadge}>
+                          {entry.predictionSummary.currentStreak}W streak
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.emptyLeaderboardState}>
+                    The board will fill in as more free predictions settle.
+                  </p>
+                )}
+              </article>
+              <article className={styles.leaderboardCard}>
+                <div className={styles.leaderboardHeader}>
+                  <h3>Hot this week</h3>
+                  <a href="/leaderboard" className={styles.secondaryButton}>
+                    View details
+                  </a>
+                </div>
+                {hotPlayers.length > 0 ? (
+                  <div className={styles.rankList}>
+                    {hotPlayers.map((entry) => (
+                      <div key={`hot-${entry.userName}-${entry.rank}`} className={styles.rankItem}>
+                        <div>
+                          <strong>
+                            #{entry.rank} {entry.userName}
+                          </strong>
+                          <p>
+                            Weekly wins {entry.predictionSummary.weeklyWins} | Accuracy{" "}
+                            {entry.predictionSummary.weeklyAccuracy}%
+                          </p>
+                        </div>
+                        <span className={styles.rankBadge}>
+                          Best {entry.predictionSummary.bestStreak}W
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.emptyLeaderboardState}>
+                    Weekly momentum will show up once a few settled predictions land.
+                  </p>
+                )}
+              </article>
+            </div>
+          </section>
 
           <section className={styles.fixtureSection}>
             <div className={styles.sectionHeader}>
