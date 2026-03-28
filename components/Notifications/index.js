@@ -7,6 +7,7 @@ import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import Loader from "../Loader";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import styles from "./Notifications.module.css";
 
 const formatNotificationTime = (value) => {
@@ -220,9 +221,7 @@ function Notifications() {
           </section>
         </div>
       </div>
-      <div className={styles.footer}>
-        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

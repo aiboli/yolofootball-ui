@@ -1,6 +1,7 @@
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import styles from "./About.module.css";
 
 const liveCapabilities = [
@@ -111,8 +112,6 @@ const signalCards = [
 ];
 
 function About() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <SeoHead
@@ -264,9 +263,7 @@ function About() {
         </section>
       </main>
 
-      <div className={styles.footer}>
-        <h5>&reg;{currentYear} Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

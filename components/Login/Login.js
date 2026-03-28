@@ -1,6 +1,7 @@
 import React from "react";
 import HomeMenu from "../HomeMenu";
 import HomeLogo from "../HomeLogo";
+import SiteFooter from "../SiteFooter";
 import styles from "./Login.module.css";
 import LoginComponent from "./LoginComponent";
 import SeoHead from "../SeoHead";
@@ -23,9 +24,7 @@ const Login = () => {
       <div className={styles.content}>
         <LoginComponent />
       </div>
-      <div className={styles.footer}>
-        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 };

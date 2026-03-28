@@ -9,6 +9,7 @@ import HomeMenu from "../HomeMenu";
 import Loader from "../Loader";
 import NotificationsPanel from "../NotificationsPanel";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import styles from "./UserDashboard.module.css";
 
 const formatCurrency = (value) => {
@@ -571,9 +572,7 @@ function UserDashboard() {
           </div>
         )}
       </div>
-      <div className={styles.footer}>
-        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

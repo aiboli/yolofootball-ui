@@ -1,6 +1,7 @@
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import styles from "./Privacy.module.css";
 import { PRIVACY_POLICY_LAST_UPDATED } from "../../helper/privacyPolicy";
 
@@ -48,8 +49,6 @@ const policySections = [
 ];
 
 function Privacy() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <SeoHead
@@ -122,9 +121,7 @@ function Privacy() {
         </section>
       </main>
 
-      <div className={styles.footer}>
-        <h5>&reg;{currentYear} Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

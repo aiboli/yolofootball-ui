@@ -1,6 +1,7 @@
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import styles from "../Privacy/Privacy.module.css";
 
 const sections = [
@@ -39,8 +40,6 @@ const sections = [
 ];
 
 function ResponsiblePlay() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <SeoHead
@@ -102,9 +101,7 @@ function ResponsiblePlay() {
         </section>
       </main>
 
-      <div className={styles.footer}>
-        <h5>&reg;{currentYear} Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

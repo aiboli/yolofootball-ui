@@ -3,6 +3,7 @@ import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import Loader from "../Loader";
 import SeoHead from "../SeoHead";
+import SiteFooter from "../SiteFooter";
 import { readJsonSafely } from "../../helper/apiResponse";
 import styles from "./Insights.module.css";
 
@@ -361,9 +362,7 @@ function Insights() {
         )}
       </main>
 
-      <div className={styles.footer}>
-        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }

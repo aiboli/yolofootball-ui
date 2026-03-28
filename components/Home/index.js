@@ -5,6 +5,7 @@ import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
 import HomeOrder from "../HomeOrder";
 import NotificationsPanel from "../NotificationsPanel";
+import SiteFooter from "../SiteFooter";
 import { useEffect, useMemo, useState, useContext } from "react";
 import AppContext from "../../helper/AppContext";
 import Loader from "../Loader";
@@ -686,9 +687,7 @@ function Home() {
           <HomeOrder />
         </div>
       </div>
-      <div className={styles.footer}>
-        <h5>&reg;2023 Yolofootball.com. All rights reserved.</h5>
-      </div>
+      <SiteFooter />
     </>
   );
 }
