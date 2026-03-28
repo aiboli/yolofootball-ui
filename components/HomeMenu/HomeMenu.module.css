@@ -3,14 +3,16 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
   padding: 0;
   margin: 0;
   list-style-type: none;
   height: 100%;
+  gap: 6px;
 }
 
 .list {
-  width: 100px;
+  min-width: 100px;
   height: 100%;
   text-decoration: none;
   list-style-type: none;
@@ -24,7 +26,8 @@
 }
 
 .list.username {
-  margin: 20px;
+  margin: 0;
+  min-width: unset;
 }
 
 .list:hover {
@@ -38,11 +41,21 @@
 }
 
 @media only screen and (max-width: 600px) {
+  .listcontainer {
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
   .list {
-    width: 62px;
+    min-width: 62px;
     height: 100%;
   }
+
   .list.username {
-    width: unset;
+    max-width: 120px;
+  }
+
+  .list h4 {
+    font-size: 12px;
   }
 }

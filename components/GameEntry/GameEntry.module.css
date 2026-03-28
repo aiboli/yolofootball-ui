@@ -69,15 +69,26 @@
   background: rgba(254, 203, 122, 0.16);
 }
 
+.shareActionButton {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .gameEntrySubTitle {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 2px 10px;
   background-color: #3f5473;
 }
 
 .gameDate {
   font-size: 12px;
+}
+
+.gameMetaFeedback {
+  font-size: 12px;
+  color: rgba(254, 203, 122, 0.88);
 }
 
 .gameEntryBody {
@@ -311,6 +322,7 @@
 
   .gameEntryActions {
     justify-content: flex-end;
+    flex-wrap: wrap;
   }
 
   .gameOddButtonGroup {

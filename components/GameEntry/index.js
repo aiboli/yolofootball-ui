@@ -34,6 +34,7 @@ function GameEntry({
   const [cancelError, setCancelError] = useState("");
   const [isCanceling, setIsCanceling] = useState(false);
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState("");
 
   const eventDate = fixture?.date || null;
   const leagueName = league?.name || "League";
@@ -120,6 +121,29 @@ function GameEntry({
       ...currentForm,
       [fieldName]: value,
     }));
+  };
+
+  const shareFixture = async () => {
+    const shareUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/?fixture=${id}`
+        : `https://www.yolofootball.com/?fixture=${id}`;
+    const sharePayload = {
+      title: `${gameTitle} on yolofootball`,
+      text: `Check out ${gameTitle} and today's matchday odds on yolofootball.`,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(sharePayload);
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      }
+      setShareFeedback("Share link ready.");
+    } catch (error) {
+      setShareFeedback("Share canceled.");
+    }
   };
 
   const submitCustomOdds = async (event) => {
@@ -233,6 +257,14 @@ function GameEntry({
               )}
             </div>
             <div className={styles.gameEntryActions}>
+              <button
+                type="button"
+                className={`${styles.customActionButton} ${styles.shareActionButton}`}
+                onClick={shareFixture}
+                aria-label={`Share ${gameTitle}`}
+              >
+                Share
+              </button>
               {activeOwnCustomEvent ? (
                 <button
                   type="button"
@@ -275,6 +307,7 @@ function GameEntry({
         </div>
         <div className={styles.gameEntrySubTitle}>
           <span className={styles.gameDate}>{formattedEventDate}</span>
+          {shareFeedback && <span className={styles.gameMetaFeedback}>{shareFeedback}</span>}
         </div>
         <div className={styles.gameEntryBody}>
           <div className={styles.gameOddButtonGroup}>

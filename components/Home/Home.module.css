@@ -1,24 +1,353 @@
 .header {
   width: 100%;
-  height: 80px;
+  min-height: 80px;
   background-color: #0c1420;
   color: #fecb7a;
   display: flex;
   align-items: center;
+  overflow-x: clip;
+}
+
+.navbar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .content {
   width: 100%;
-  min-height: 100px;
-  background-color: black;
+  max-width: 100%;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(254, 203, 122, 0.08), transparent 28%),
+    linear-gradient(180deg, #050a10 0%, #0b1320 100%);
   display: flex;
-  flex-direction: row;
   align-items: flex-start;
+  overflow-x: clip;
+}
+
+.games {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 16px 12px 28px;
+  display: grid;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.dashboardColumn {
+  width: min(450px, 100%);
+  max-width: 100%;
+  min-width: 0;
+  padding-right: 6px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.95fr);
+  gap: 16px;
+}
+
+.heroCopy,
+.spotlightCard,
+.preferencePanel,
+.starterSlipCard,
+.onboardingCard,
+.guideCard,
+.metricCard,
+.insightCard,
+.trendingCard {
+  border: 1px solid rgba(254, 203, 122, 0.14);
+  border-top: 5px solid #fecb7a;
+  background: linear-gradient(180deg, rgba(17, 28, 43, 0.98) 0%, rgba(10, 18, 30, 0.98) 100%);
+  color: white;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+}
+
+.heroCopy {
+  padding: 24px;
+}
+
+.spotlightCard {
+  padding: 20px;
+}
+
+.eyebrow,
+.cardEyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(254, 203, 122, 0.82);
+  font-size: 12px;
+}
+
+.pageTitle {
+  color: #fecb7a;
+  margin: 0 0 12px;
+  line-height: 1.15;
+  font-size: clamp(30px, 4vw, 46px);
+}
+
+.pageDescription,
+.sectionCopy,
+.insightCard p,
+.guideCard p,
+.metricCard p,
+.spotlightCard p,
+.onboardingCard p,
+.trendingCard p,
+.preferencePanel p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.primaryButton,
+.secondaryButton,
+.chipButton {
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.primaryButton:hover,
+.secondaryButton:hover,
+.chipButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton {
+  border: none;
+  background: #fecb7a;
+  color: #0c1420;
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.secondaryButton {
+  border: 1px solid rgba(254, 203, 122, 0.34);
+  background: transparent;
+  color: #fecb7a;
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.feedback {
+  margin: 12px 0 0;
+  color: rgba(254, 203, 122, 0.88);
+  font-size: 13px;
+}
+
+.cardMeta {
+  margin: 6px 0 10px;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 13px;
+}
+
+.spotlightStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.spotlightStats span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(254, 203, 122, 0.12);
+  border-radius: 999px;
+  color: #fecb7a;
+  font-size: 12px;
+}
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.insightCard,
+.metricCard,
+.guideCard,
+.trendingCard {
+  padding: 18px;
+}
+
+.preferencePanel,
+.trendingPanel,
+.fixtureSection {
+  padding: 20px;
+  background: rgba(8, 14, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.sectionHeader h2,
+.starterSlipCard h3,
+.onboardingCard h3,
+.guideCard h3,
+.insightCard h3,
+.metricCard h3,
+.trendingCard h3,
+.spotlightCard h3 {
+  margin: 0 0 8px;
+}
+
+.sectionHeader h2 {
+  color: white;
+}
+
+.sectionCopy {
+  max-width: 360px;
+}
+
+.preferenceColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.preferenceGroup {
+  display: grid;
+  gap: 12px;
+}
+
+.preferenceGroup h4 {
+  margin: 0;
+  color: white;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chipButton {
+  border: 1px solid rgba(254, 203, 122, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  padding: 9px 12px;
+  font-weight: 600;
+}
+
+.chipButtonActive {
+  border-color: #fecb7a;
+  background: rgba(254, 203, 122, 0.14);
+  color: #fecb7a;
+}
+
+.guideRail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 14px;
+}
+
+.starterSlipCard,
+.onboardingCard {
+  padding: 20px;
+}
+
+.starterList {
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.82);
+  display: grid;
+  gap: 8px;
+}
+
+.starterFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  color: #fecb7a;
+  font-weight: 700;
+}
+
+.stepList {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stepItem {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid rgba(254, 203, 122, 0.4);
+}
+
+.stepTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stepTitleRow strong {
+  color: white;
+}
+
+.stepBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(254, 203, 122, 0.16);
+  color: #fecb7a;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stepBadgeDone {
+  background: rgba(106, 227, 168, 0.16);
+  color: #6ae3a8;
+}
+
+.guideGrid,
+.trendingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.guideCta {
+  display: inline-flex;
+  margin-top: 12px;
+  color: #fecb7a;
+  font-weight: 700;
+}
+
+.fixtureSection {
+  display: grid;
+  gap: 14px;
 }
 
 .footer {
   width: 100%;
-  height: 100px;
+  min-height: 100px;
   background-color: #474344;
   text-align: center;
   display: flex;
@@ -29,71 +358,78 @@
   margin: auto;
 }
 
-.leagues {
-  width: 200px;
-  border: 1px green solid;
-  height: 100%;
-}
+@media only screen and (max-width: 1100px) {
+  .hero,
+  .guideRail,
+  .insightGrid,
+  .guideGrid,
+  .trendingGrid,
+  .preferenceColumns {
+    grid-template-columns: 1fr;
+  }
 
-.games {
-  height: 100%;
-  width: 100%;
-  min-width: 300px;
-  padding: 10px 7px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-}
+  .dashboardColumn {
+    width: 100%;
+    padding: 0 12px 24px;
+  }
 
-.seoIntro {
-  width: 100%;
-  background-color: #0c1420;
-  border-top: 4px solid #fecb7a;
-  color: white;
-  margin-bottom: 16px;
-  padding: 18px 20px;
-  box-sizing: border-box;
-}
+  .content {
+    flex-direction: column;
+  }
 
-.pageTitle {
-  color: #fecb7a;
-  margin-bottom: 10px;
-}
+  .games,
+  .dashboardColumn {
+    width: 100%;
+  }
 
-.pageDescription {
-  color: white;
-  line-height: 1.6;
-}
+  .sectionHeader {
+    flex-direction: column;
+  }
 
-.dashboard {
-  height: 100%;
-  width: 450px;
-  border: goldenrod 1px solid;
-}
-
-.navbar {
-  display: flex;
-  flex-flow: row;
-  width: 100%;
-  justify-content: space-between;
-  flex-direction: row;
-  align-items: center;
+  .sectionCopy {
+    max-width: unset;
+  }
 }
 
 @media only screen and (max-width: 600px) {
-  .dashboard {
-    display: none;
+  .header {
+    min-height: unset;
+    padding: 8px 0;
+  }
+
+  .navbar {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
   }
 
   .games {
-    height: 100%;
-    width: 100%;
-    min-width: 300px;
-    text-align: center;
+    padding: 12px 8px 22px;
   }
 
-  .seoIntro {
+  .heroCopy,
+  .spotlightCard,
+  .starterSlipCard,
+  .onboardingCard,
+  .guideCard,
+  .metricCard,
+  .insightCard,
+  .trendingCard,
+  .preferencePanel,
+  .fixtureSection {
     padding: 16px;
+  }
+
+  .starterFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboardColumn {
+    padding: 0 8px 18px;
+  }
+
+  .content {
+    width: 100%;
   }
 }

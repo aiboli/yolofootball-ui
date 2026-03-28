@@ -1,79 +1,147 @@
-.LoginComponentContainer {
-  width: 800px;
-  min-height: 600px;
-  background-color: #3f5473;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 30px auto;
+.authShell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 24px;
+  align-items: stretch;
 }
 
-.LoginComponentTitle {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #0c1420;
-  color: white;
-  width: 100%;
+.authIntro,
+.authCard {
+  border-top: 5px solid #fecb7a;
+  border-left: 1px solid rgba(254, 203, 122, 0.14);
+  border-right: 1px solid rgba(254, 203, 122, 0.1);
+  border-bottom: 1px solid rgba(254, 203, 122, 0.1);
+  background: linear-gradient(180deg, rgba(22, 33, 49, 0.96) 0%, rgba(10, 18, 30, 0.98) 100%);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
 }
 
-.LoginComponentTitle h4 {
-  padding: 5px 10px;
+.authIntro {
+  padding: 28px;
+  display: grid;
+  align-content: center;
 }
 
-.LoginComponentForm {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 0px;
-  width: 100%;
-}
-
-.LoginComponentInputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 0px;
-  width: 100%;
-}
-
-.LoginComponentInputContainer input {
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #0c1420;
-  border-radius: 0;
-  background-color: #0c1420;
-  color: white;
-  font-family: "Roboto", serif;
-}
-
-.LoginComponentInputContainer input::placeholder {
-  color: white;
-  opacity: 0.7;
-}
-
-.LoginComponentInputContainer input:focus {
-  border-color: #fecb7a;
-  outline: none;
-  background-color: #18253a;
-}
-
-.LoginComponentButton {
-  width: 100%;
-  padding: 10px;
-  background-color: #0c1420; /* Update to theme color */
+.eyebrow,
+.cardEyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
   color: #fecb7a;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  box-sizing: border-box;
-  font-family: "Roboto", serif;
 }
 
-.LoginComponentButton:hover {
-  background-color: #fecb7a; /* Update to theme color */
+.authIntro h1,
+.authCardHeader h2 {
+  margin: 0 0 14px;
+  color: #fecb7a;
+}
+
+.authIntro h1 {
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 1.08;
+}
+
+.authCopy,
+.authCardHeader p,
+.authMeta {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.8;
+}
+
+.authHighlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.authHighlights span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid rgba(254, 203, 122, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.authCard {
+  padding: 24px;
+}
+
+.authForm {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  color: rgba(254, 203, 122, 0.9);
+  font-size: 13px;
+}
+
+.field input {
+  width: 100%;
+  border: 1px solid rgba(254, 203, 122, 0.24);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  padding: 12px 14px;
+  outline: none;
+}
+
+.field input::placeholder {
+  color: rgba(255, 255, 255, 0.46);
+}
+
+.field input:focus {
+  border-color: #fecb7a;
+  box-shadow: 0 0 0 3px rgba(254, 203, 122, 0.1);
+}
+
+.primaryButton {
+  border: none;
+  background: #fecb7a;
   color: #0c1420;
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.formError {
+  margin: 0;
+  color: #ff9c9c;
+}
+
+.authMeta {
+  margin-top: 16px;
+}
+
+.authMeta a {
+  color: #fecb7a;
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 900px) {
+  .authShell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .authIntro,
+  .authCard {
+    padding: 18px;
+  }
 }

@@ -1,17 +1,19 @@
 .receiptContainer {
   height: 100%;
-  width: 450px;
+  width: min(450px, 100%);
+  max-width: 100%;
   background-color: #3f5473;
   border-top: 5px solid #fecb7a;
-  margin: 10px 1px;
+  margin: 10px 0;
   min-height: 400px;
 }
 
 .receiptContainerMobile {
   width: 100%;
+  max-width: 100%;
   background-color: #3f5473;
   border-top: 5px solid #fecb7a;
-  margin: 10px 1px;
+  margin: 10px 0;
   min-height: 200px;
 }
 
@@ -30,6 +32,8 @@
     align-items: center;
     justify-content: space-around;
     min-height: unset;
+    margin: 0;
+    z-index: 20;
   }
 
   .receiptContainer h1 {
@@ -139,6 +143,7 @@
 .betStakeInput {
   width: 100%;
   max-width: 120px;
+  min-width: 0;
   font-family: "Roboto", serif;
   background-color: white;
   border: none;

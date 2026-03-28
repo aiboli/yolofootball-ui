@@ -1,0 +1,182 @@
+.header {
+  width: 100%;
+  min-height: 80px;
+  background-color: #0c1420;
+  color: #fecb7a;
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  --privacy-gold: #fecb7a;
+  --privacy-gold-soft: rgba(254, 203, 122, 0.12);
+  --privacy-surface: #101927;
+  --privacy-surface-raised: #162131;
+  min-height: calc(100vh - 180px);
+  padding: 36px 24px 72px;
+  color: white;
+  background:
+    radial-gradient(circle at top left, rgba(254, 203, 122, 0.18), transparent 26%),
+    radial-gradient(circle at 85% 10%, rgba(63, 84, 115, 0.42), transparent 28%),
+    linear-gradient(180deg, #0c1420 0%, #05080f 100%);
+}
+
+.hero,
+.section,
+.noticeBanner {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 28px;
+}
+
+.heroCopy,
+.summaryCard,
+.policyCard,
+.noticeBanner {
+  border-top: 5px solid var(--privacy-gold);
+  border-left: 1px solid rgba(254, 203, 122, 0.14);
+  border-right: 1px solid rgba(254, 203, 122, 0.1);
+  border-bottom: 1px solid rgba(254, 203, 122, 0.1);
+  background: linear-gradient(180deg, rgba(22, 33, 49, 0.96) 0%, rgba(10, 18, 30, 0.98) 100%);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+}
+
+.heroCopy,
+.summaryCard,
+.noticeBanner {
+  padding: 24px;
+}
+
+.eyebrow,
+.cardEyebrow,
+.sectionEyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  color: var(--privacy-gold);
+}
+
+.title {
+  margin: 0 0 16px;
+  color: var(--privacy-gold);
+  line-height: 1.1;
+  font-size: clamp(34px, 4vw, 54px);
+}
+
+.description,
+.noticeBanner p:last-child {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.8;
+  font-size: 17px;
+}
+
+.heroTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.heroTags span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(254, 203, 122, 0.18);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.summaryCard h2,
+.sectionHeader h2,
+.noticeBanner h2 {
+  margin: 0 0 12px;
+  color: var(--privacy-gold);
+}
+
+.summaryList,
+.policyCard ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionHeader {
+  max-width: 780px;
+  margin-bottom: 20px;
+}
+
+.policyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.policyCard {
+  padding: 22px 20px;
+}
+
+.policyCard h3 {
+  margin: 0 0 14px;
+  color: white;
+}
+
+.noticeBanner {
+  display: grid;
+  gap: 10px;
+}
+
+.footer {
+  width: 100%;
+  min-height: 100px;
+  background-color: #474344;
+  text-align: center;
+  display: flex;
+  color: #fecb7a;
+}
+
+.footer h5 {
+  margin: auto;
+}
+
+@media only screen and (max-width: 900px) {
+  .hero,
+  .policyGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .content {
+    padding: 20px 10px 48px;
+  }
+
+  .heroCopy,
+  .summaryCard,
+  .policyCard,
+  .noticeBanner {
+    padding: 18px;
+  }
+}

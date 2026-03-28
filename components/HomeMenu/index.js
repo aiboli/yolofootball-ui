@@ -36,6 +36,11 @@ function HomeMenu() {
             <h4>About</h4>
           </a>
         </li>
+        <li className={styles.list}>
+          <a href="/privacy">
+            <h4>Privacy</h4>
+          </a>
+        </li>
         {appContext.userProfile && appContext.userProfile.userName && (
           <li className={`${styles.list} ${styles.username}`}>
             <a href="/user">
