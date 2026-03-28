@@ -1,7 +1,12 @@
 import { useState } from "react";
 import OddButton from "../Basic/OddButton";
 import { getCookie } from "../../helper/cookieHelper";
+import { getApiMessage, readJsonSafely } from "../../helper/apiResponse";
 import styles from "./GameEntry.module.css";
+
+const isFiniteOdd = (value) => Number.isFinite(parseFloat(value));
+const formatOddForDisplay = (value) =>
+  isFiniteOdd(value) ? Number(parseFloat(value).toFixed(2)) : null;
 
 function GameEntry({
   id,
@@ -30,27 +35,31 @@ function GameEntry({
   const [isCanceling, setIsCanceling] = useState(false);
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
 
-  const eventDate = fixture.date;
-  const leagueName = league.name;
-  const leagueLogo = league.logo;
-  const oddsContent = odd.bets[0]?.values;
-  const homeOdd = oddsContent[0]?.odd;
-  const drawOdd = oddsContent[1]?.odd;
-  const awayOdd = oddsContent[2]?.odd;
-  const gameTitle = `${home} vs ${away}`;
-  const customOddsCount = customEvents.length;
+  const eventDate = fixture?.date || null;
+  const leagueName = league?.name || "League";
+  const leagueLogo = league?.logo || "";
+  const oddsContent = Array.isArray(odd?.bets?.[0]?.values) ? odd.bets[0].values : [];
+  const homeOdd = formatOddForDisplay(oddsContent[0]?.odd);
+  const drawOdd = formatOddForDisplay(oddsContent[1]?.odd);
+  const awayOdd = formatOddForDisplay(oddsContent[2]?.odd);
+  const gameTitle = `${home || "Home"} vs ${away || "Away"}`;
+  const customOddsList = Array.isArray(customEvents) ? customEvents : [];
+  const customOddsCount = customOddsList.length;
   const activeOwnCustomEvent = ownCustomEvent?.status === "active" ? ownCustomEvent : null;
   const isFixtureNotStarted = fixture?.status?.short === "NS";
   const canCancelOwnCustomOdd = !!activeOwnCustomEvent && isFixtureNotStarted;
+  const canOpenCreateModal = canCreateCustomOdds && isFixtureNotStarted && !activeOwnCustomEvent;
 
-  const formattedEventDate = new Date(eventDate).toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
+  const formattedEventDate = eventDate
+    ? new Date(eventDate).toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      })
+    : "Kickoff unavailable";
 
   const closeCreateModal = () => {
     setIsCreateModalOpen(false);
@@ -75,6 +84,14 @@ function GameEntry({
   const openCreateModal = () => {
     if (!canCreateCustomOdds) {
       alert("Please sign in before creating custom odds.");
+      return;
+    }
+    if (!isFixtureNotStarted) {
+      alert("Custom odds can only be created before kickoff.");
+      return;
+    }
+    if (activeOwnCustomEvent) {
+      openOwnModal();
       return;
     }
 
@@ -140,10 +157,10 @@ function GameEntry({
           authorization: `${getCookie("access_token")}`,
         },
       });
-      const data = await response.json();
+      const data = await readJsonSafely(response);
 
       if (!response.ok) {
-        setSubmitError(data.message || "Unable to post custom odds.");
+        setSubmitError(getApiMessage(data, "Unable to post custom odds."));
         return;
       }
 
@@ -177,10 +194,10 @@ function GameEntry({
           },
         }
       );
-      const data = await response.json();
+      const data = await readJsonSafely(response);
 
       if (!response.ok) {
-        setCancelError(data.message || "Unable to cancel custom odds.");
+        setCancelError(getApiMessage(data, "Unable to cancel custom odds."));
         return;
       }
 
@@ -198,12 +215,16 @@ function GameEntry({
     <>
       <div className={styles.gameEntry}>
         <div className={styles.gameEntryTitle}>
-          <img
-            className={styles.leagueLogo}
-            alt={leagueName}
-            src={leagueLogo}
-            title={leagueName}
-          ></img>
+          {leagueLogo ? (
+            <img
+              className={styles.leagueLogo}
+              alt={leagueName}
+              src={leagueLogo}
+              title={leagueName}
+            ></img>
+          ) : (
+            <div className={styles.leagueLogoPlaceholder} aria-hidden="true"></div>
+          )}
           <div className={styles.titleBlock}>
             <div className={styles.titleText}>
               <h5>{gameTitle}</h5>
@@ -227,6 +248,14 @@ function GameEntry({
                   className={styles.customActionButton}
                   onClick={openCreateModal}
                   aria-label={`Create custom odds for ${gameTitle}`}
+                  disabled={!canOpenCreateModal}
+                  title={
+                    !canCreateCustomOdds
+                      ? "Please sign in before creating custom odds."
+                      : !isFixtureNotStarted
+                        ? "Custom odds can only be created before kickoff."
+                        : undefined
+                  }
                 >
                   +
                 </button>
@@ -457,10 +486,10 @@ function GameEntry({
               </button>
             </div>
             <div className={styles.customOddsList}>
-              {customEvents.length === 0 ? (
+              {customOddsList.length === 0 ? (
                 <p className={styles.emptyState}>No custom odds are available for this game.</p>
               ) : (
-                customEvents.map((customEvent) => (
+                customOddsList.map((customEvent) => (
                   <article key={customEvent.id} className={styles.customOddsCard}>
                     <div className={styles.customOddsCardHeader}>
                       <strong>{customEvent.created_by}</strong>

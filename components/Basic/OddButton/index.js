@@ -8,6 +8,7 @@ import {
 
 function OddButton({ data }) {
   const { appContext, setAppContext } = useContext(AppContext);
+  const isDisabled = data?.disabled || !Number.isFinite(parseFloat(data?.odd));
   const currentOption = appContext.selectedEvents.find(
     (selectedEvent) => selectedEvent.eventId === data.eventId
   );
@@ -18,8 +19,15 @@ function OddButton({ data }) {
     <button
       className={`${styles.oddButton} ${
         currentOptionIsSelected ? styles.selected : ""
-      }`}
+      } ${isDisabled ? styles.disabled : ""}`}
+      disabled={isDisabled}
+      aria-disabled={isDisabled}
+      title={isDisabled ? "Odds are currently unavailable for this outcome." : undefined}
       onClick={() => {
+        if (isDisabled) {
+          return;
+        }
+
         setAppContext((currentContext) => {
           const existingSelections = currentContext.selectedEvents || [];
           const selectionIndex = existingSelections.findIndex(
@@ -78,7 +86,7 @@ function OddButton({ data }) {
     >
       <span className={styles.oddTitle}>{data.title}</span>
       <br />
-      <span className={styles.oddNumber}>{data.odd}</span>
+      <span className={styles.oddNumber}>{isDisabled ? "N/A" : data.odd}</span>
     </button>
   );
 }

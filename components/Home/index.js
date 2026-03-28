@@ -10,6 +10,7 @@ import AppContext from "../../helper/AppContext";
 import Loader from "../Loader";
 import SeoHead from "../SeoHead";
 import { getCookie } from "../../helper/cookieHelper";
+import { readJsonSafely } from "../../helper/apiResponse";
 
 function Home() {
   const [entries, setEntries] = useState([]);
@@ -44,13 +45,18 @@ function Home() {
           ...(accessToken ? { authorization: `${accessToken}` } : {}),
         },
       });
-      const data = await response.json();
+      const data = await readJsonSafely(response);
 
       if (response.ok) {
-        setCustomOddsByFixture(data.events_by_fixture || {});
-        setOwnCustomOddsByFixture(data.own_events_by_fixture || {});
+        setCustomOddsByFixture(data?.events_by_fixture || {});
+        setOwnCustomOddsByFixture(data?.own_events_by_fixture || {});
+      } else {
+        setCustomOddsByFixture({});
+        setOwnCustomOddsByFixture({});
       }
     } catch (error) {
+      setCustomOddsByFixture({});
+      setOwnCustomOddsByFixture({});
       console.error("Failed to load custom odds", error);
     }
   }
@@ -71,8 +77,8 @@ function Home() {
             method: "GET",
           }
         );
-        const data = await response.json();
-        const entryData = Object.values(data).filter(
+        const data = await readJsonSafely(response);
+        const entryData = Object.values(data || {}).filter(
           (item) => new Date(item.fixture?.date) >= new Date()
         );
 

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import AppContext from "../../helper/AppContext";
 import { getCookie } from "../../helper/cookieHelper";
+import { getApiMessage, readJsonSafely } from "../../helper/apiResponse";
 import normalizeUserProfile from "../../helper/normalizeUserProfile";
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
@@ -183,9 +184,9 @@ function UserDashboard() {
         Authorization: accessToken,
       },
     });
-    const data = await response.json();
+    const data = await readJsonSafely(response);
 
-    if (response.ok && data.message === "succeed") {
+    if (response.ok && data?.message === "succeed") {
       setAppContext((currentContext) => ({
         ...currentContext,
         userProfile: normalizeUserProfile(data.userProfile),
@@ -227,12 +228,12 @@ function UserDashboard() {
           },
         }
       );
-      const data = await response.json();
+      const data = await readJsonSafely(response);
 
       if (!response.ok) {
         setEventActionError({
           eventId,
-          message: data.message || "Unable to cancel custom odds.",
+          message: getApiMessage(data, "Unable to cancel custom odds."),
         });
         return;
       }

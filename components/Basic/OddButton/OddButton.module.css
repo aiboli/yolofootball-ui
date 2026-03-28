@@ -27,6 +27,20 @@ button.oddButton.selected {
   transform: scale(0.97);
 }
 
+button.oddButton.disabled,
+button.oddButton:disabled {
+  background-color: #111926;
+  color: rgba(254, 203, 122, 0.5);
+  cursor: not-allowed;
+  border-top: 2px #111926 solid;
+}
+
+button.oddButton.disabled:hover,
+button.oddButton:disabled:hover {
+  background-color: #111926;
+  border-top: 2px #111926 solid;
+}
+
 .oddTitle {
   color: white;
 }

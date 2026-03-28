@@ -55,6 +55,11 @@
   font-weight: 700;
 }
 
+.customActionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .customActionButtonAccent {
   background: #fecb7a;
   color: #0c1420;
@@ -98,6 +103,14 @@
   width: 20px;
   height: 20px;
   margin-right: 10px;
+}
+
+.leagueLogoPlaceholder {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 999px;
+  background: rgba(254, 203, 122, 0.18);
 }
 
 .modalOverlay {
