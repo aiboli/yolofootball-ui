@@ -9,6 +9,7 @@ function HomeMenu() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const unreadNotificationCount = Number(appContext.unreadNotificationCount || 0);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -58,6 +59,9 @@ function HomeMenu() {
         orders: [],
       },
       selectedEvents: [],
+      notifications: [],
+      unreadNotificationCount: 0,
+      isNotificationsBusy: false,
       order: {
         totalBet: 0,
         combinedOdd: 0,
@@ -69,6 +73,41 @@ function HomeMenu() {
 
   return (
     <div className={styles.homemenu} ref={menuRef}>
+      {appContext.userProfile?.userName && (
+        <a
+          href="/notifications"
+          className={styles.notificationButton}
+          onClick={(event) => {
+            event.preventDefault();
+            closeMenu();
+            router.push("/notifications");
+          }}
+          aria-label={
+            unreadNotificationCount > 0
+              ? `${unreadNotificationCount} unread notifications`
+              : "Open notifications"
+          }
+        >
+          <svg
+            className={styles.notificationIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M6 8a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"></path>
+            <path d="M10 21a2 2 0 0 0 4 0"></path>
+          </svg>
+          {unreadNotificationCount > 0 && (
+            <span className={styles.notificationBadge}>
+              {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
+            </span>
+          )}
+        </a>
+      )}
       <button
         className={`${styles.burgerButton} ${isMenuOpen ? styles.burgerButtonOpen : ""}`}
         type="button"

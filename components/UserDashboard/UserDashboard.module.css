@@ -142,6 +142,10 @@
   gap: 20px;
 }
 
+.notificationSection {
+  width: 100%;
+}
+
 .statCard {
   background: rgba(7, 11, 19, 0.92);
   border: 1px solid rgba(254, 203, 122, 0.18);

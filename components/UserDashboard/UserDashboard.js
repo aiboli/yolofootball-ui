@@ -7,6 +7,7 @@ import normalizeUserProfile from "../../helper/normalizeUserProfile";
 import HomeLogo from "../HomeLogo";
 import HomeMenu from "../HomeMenu";
 import Loader from "../Loader";
+import NotificationsPanel from "../NotificationsPanel";
 import SeoHead from "../SeoHead";
 import styles from "./UserDashboard.module.css";
 
@@ -166,7 +167,12 @@ const isCustomEventCancelable = (event) => {
 };
 
 function UserDashboard() {
-  const { appContext, setAppContext } = useContext(AppContext);
+  const {
+    appContext,
+    setAppContext,
+    markNotificationRead,
+    markAllNotificationsRead,
+  } = useContext(AppContext);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [cancelingEventId, setCancelingEventId] = useState("");
   const [eventActionError, setEventActionError] = useState({
@@ -407,6 +413,21 @@ function UserDashboard() {
                 <span className={styles.label}>Free predictions</span>
                 <p className={styles.statValue}>{profile.predictionCount}</p>
               </article>
+            </section>
+
+            <section className={styles.notificationSection}>
+              <NotificationsPanel
+                title="Unread matchday alerts"
+                description="These are the latest reminders and settlement updates tied to your account activity."
+                notifications={appContext.notifications}
+                emptyTitle="No unread notifications."
+                emptyDescription="As your followed clubs approach kickoff or your activity settles, fresh alerts will show up here."
+                limit={5}
+                showMarkAll={true}
+                isBusy={appContext.isNotificationsBusy}
+                onMarkAll={() => markAllNotificationsRead({ previewLimit: 5 })}
+                onMarkRead={markNotificationRead}
+              />
             </section>
 
             <section className={styles.activityGrid}>

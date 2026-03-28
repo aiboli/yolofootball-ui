@@ -5,6 +5,7 @@ import LeagueMenu from "../LeagueMenu";
 import GameEntry from "../GameEntry";
 import HomeReceipt from "../HomeReceipt";
 import HomeOrder from "../HomeOrder";
+import NotificationsPanel from "../NotificationsPanel";
 import { useEffect, useMemo, useState, useContext } from "react";
 import AppContext from "../../helper/AppContext";
 import Loader from "../Loader";
@@ -102,7 +103,7 @@ function Home() {
   const [shareFeedback, setShareFeedback] = useState("");
   const [predictionFeedback, setPredictionFeedback] = useState("");
   const [isSubmittingPrediction, setIsSubmittingPrediction] = useState(false);
-  const { appContext, setAppContext } = useContext(AppContext);
+  const { appContext, setAppContext, markNotificationRead } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
 
   async function loadCustomOdds(entryList = entries) {
@@ -540,6 +541,31 @@ function Home() {
                 </div>
               </article>
             )}
+          </section>
+
+          <section className={styles.notificationPanelSection}>
+            <NotificationsPanel
+              title="Matchday action center"
+              description={
+                appContext.userProfile?.userName
+                  ? "Unread alerts from your follows, predictions, orders, and custom odds appear here first."
+                  : "Sign in to see kickoff reminders, prediction results, and settlement updates here."
+              }
+              notifications={appContext.notifications}
+              emptyTitle={
+                appContext.userProfile?.userName
+                  ? "You are all caught up."
+                  : "No alerts yet."
+              }
+              emptyDescription={
+                appContext.userProfile?.userName
+                  ? "New activity will show up here as followed fixtures approach kickoff or your actions settle."
+                  : "Create an account, follow a few clubs, and your action center will start filling in."
+              }
+              limit={3}
+              isBusy={appContext.isNotificationsBusy}
+              onMarkRead={appContext.userProfile?.userName ? markNotificationRead : undefined}
+            />
           </section>
 
           {sportsdb && (
