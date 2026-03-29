@@ -665,6 +665,30 @@
   gap: 14px;
 }
 
+.fixtureToolbar {
+  display: grid;
+  gap: 12px;
+}
+
+.fixtureFilterRail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fixtureBoardMeta {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fixtureLoadMoreRow {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
 .footer {
   width: 100%;
   min-height: 100px;

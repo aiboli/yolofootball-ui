@@ -21,6 +21,10 @@ import {
   togglePreference,
 } from "../../helper/homePreferences";
 
+const ALL_LEAGUES_FILTER = "all";
+const INITIAL_VISIBLE_FIXTURES = 12;
+const FIXTURE_PAGE_SIZE = 12;
+
 const scoreFixtureAgainstPreferences = (fixture, preferences) => {
   if (!fixture) {
     return 0;
@@ -83,6 +87,8 @@ function Home() {
     leaderboard: [],
     hotThisWeek: [],
   });
+  const [activeLeagueFilter, setActiveLeagueFilter] = useState(ALL_LEAGUES_FILTER);
+  const [visibleFixtureCount, setVisibleFixtureCount] = useState(INITIAL_VISIBLE_FIXTURES);
   const { appContext, setAppContext, markNotificationRead } = useContext(AppContext);
   const showMobileOrder = appContext.showMobileOrder;
 
@@ -249,6 +255,48 @@ function Home() {
     [entries, preferences]
   );
 
+  const availableLeagueFilters = useMemo(() => {
+    const leagueFrequency = new Map();
+
+    entries.forEach((entry) => {
+      const leagueName = entry?.league?.name;
+      if (leagueName) {
+        leagueFrequency.set(leagueName, (leagueFrequency.get(leagueName) || 0) + 1);
+      }
+    });
+
+    return [...leagueFrequency.entries()]
+      .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+      .map(([leagueName]) => leagueName);
+  }, [entries]);
+
+  const filteredEntries = useMemo(() => {
+    if (activeLeagueFilter === ALL_LEAGUES_FILTER) {
+      return sortedEntries;
+    }
+
+    return sortedEntries.filter((entry) => entry?.league?.name === activeLeagueFilter);
+  }, [activeLeagueFilter, sortedEntries]);
+
+  const visibleEntries = useMemo(
+    () => filteredEntries.slice(0, visibleFixtureCount),
+    [filteredEntries, visibleFixtureCount]
+  );
+  const hasMoreFixtures = visibleEntries.length < filteredEntries.length;
+
+  useEffect(() => {
+    setVisibleFixtureCount(INITIAL_VISIBLE_FIXTURES);
+  }, [activeLeagueFilter, entries.length]);
+
+  useEffect(() => {
+    if (
+      activeLeagueFilter !== ALL_LEAGUES_FILTER &&
+      !availableLeagueFilters.includes(activeLeagueFilter)
+    ) {
+      setActiveLeagueFilter(ALL_LEAGUES_FILTER);
+    }
+  }, [activeLeagueFilter, availableLeagueFilters]);
+
   const updatePreferences = (nextPreferences) => {
     setPreferences(nextPreferences);
     saveHomePreferences(nextPreferences);
@@ -350,6 +398,14 @@ function Home() {
     });
   };
 
+  const handleLeagueFilterChange = (leagueName) => {
+    setActiveLeagueFilter(leagueName);
+  };
+
+  const handleShowMoreFixtures = () => {
+    setVisibleFixtureCount((currentCount) => currentCount + FIXTURE_PAGE_SIZE);
+  };
+
   const applyStarterSlip = () => {
     const starterSelections = homeFeed?.starter_slip?.selections;
     if (!Array.isArray(starterSelections) || starterSelections.length === 0) {
@@ -436,8 +492,8 @@ function Home() {
     : [];
 
   const entryComponent =
-    sortedEntries.length > 0 ? (
-      sortedEntries.map((item) => (
+    visibleEntries.length > 0 ? (
+      visibleEntries.map((item) => (
         <GameEntry
           key={item.fixture?.id}
           id={item.fixture?.id}
@@ -796,9 +852,49 @@ function Home() {
                 kickoff order.
               </p>
             </div>
+            <div className={styles.fixtureToolbar}>
+              <div className={styles.fixtureFilterRail}>
+                <button
+                  type="button"
+                  className={`${styles.chipButton} ${
+                    activeLeagueFilter === ALL_LEAGUES_FILTER ? styles.chipButtonActive : ""
+                  }`}
+                  onClick={() => handleLeagueFilterChange(ALL_LEAGUES_FILTER)}
+                >
+                  All leagues
+                </button>
+                {availableLeagueFilters.map((leagueName) => (
+                  <button
+                    key={leagueName}
+                    type="button"
+                    className={`${styles.chipButton} ${
+                      activeLeagueFilter === leagueName ? styles.chipButtonActive : ""
+                    }`}
+                    onClick={() => handleLeagueFilterChange(leagueName)}
+                  >
+                    {leagueName}
+                  </button>
+                ))}
+              </div>
+              <p className={styles.fixtureBoardMeta}>
+                Showing {visibleEntries.length} of {filteredEntries.length} fixtures
+                {activeLeagueFilter !== ALL_LEAGUES_FILTER ? ` in ${activeLeagueFilter}` : ""}
+              </p>
+            </div>
             {loading && <Loader />}
             {!loading && showMobileOrder && <HomeReceipt isMobile={true} />}
             {!loading && entryComponent}
+            {!loading && hasMoreFixtures && (
+              <div className={styles.fixtureLoadMoreRow}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={handleShowMoreFixtures}
+                >
+                  Show more fixtures
+                </button>
+              </div>
+            )}
           </section>
         </div>
         <div className={styles.dashboardColumn}>
