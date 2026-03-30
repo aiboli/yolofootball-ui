@@ -35,6 +35,8 @@ function SeoHead({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
 
+      <meta name="google-adsense-account" content="ca-pub-8073958171092439"></meta>
+
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
