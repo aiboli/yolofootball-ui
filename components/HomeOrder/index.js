@@ -40,11 +40,23 @@ function HomeOrder() {
     return styles.userOrderStatusPending;
   };
 
+  const getOrderSourceLabel = (item) => {
+    if (item?.order_source === "custom_event") {
+      return item?.counterparty_user_name
+        ? `Custom odd vs ${item.counterparty_user_name}`
+        : "Custom odd";
+    }
+
+    return item?.selection_details?.length > 1 ? "Accumulator" : "Standard odd";
+  };
+
   const renderOrderSummary = (item) => {
     if (Array.isArray(item.selection_details) && item.selection_details.length > 1) {
       return (
         <>
           <h5>
+            <span className={styles.userOrderSource}>{getOrderSourceLabel(item)}</span>
+            <br />
             {item.selection_details.length} picks @{" "}
             <span>{Number(item.odd_rate || 0).toFixed(2)}</span>
           </h5>
@@ -76,6 +88,8 @@ function HomeOrder() {
     return (
       <>
         <h5>
+          <span className={styles.userOrderSource}>{getOrderSourceLabel(item)}</span>
+          <br />
           {item?.fixture_details?.league?.name}
           {" on "}
           <span>

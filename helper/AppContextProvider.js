@@ -198,6 +198,55 @@ export default function AppContextProvider({ children }) {
     }
   };
 
+  const refreshUserProfile = async ({ accessToken } = {}) => {
+    const nextAccessToken = accessToken || getCookie("access_token");
+    if (!nextAccessToken) {
+      clearNotificationState();
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userProfile: undefined,
+        isAuthResolved: true,
+      }));
+      return null;
+    }
+
+    try {
+      const res = await fetch("https://service.yolofootball.com/api/users/profile", {
+        method: "GET",
+        headers: {
+          Authorization: nextAccessToken,
+        },
+      });
+      const data = await readJsonSafely(res);
+
+      if (res.ok && data?.message === "succeed") {
+        setAppContext((currentContext) => ({
+          ...currentContext,
+          userProfile: normalizeUserProfile(data.userProfile),
+          isAuthResolved: true,
+        }));
+        return data.userProfile;
+      }
+
+      clearNotificationState();
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userProfile: undefined,
+        isAuthResolved: true,
+      }));
+      return null;
+    } catch (error) {
+      console.error("Failed to load user profile", error);
+      clearNotificationState();
+      setAppContext((currentContext) => ({
+        ...currentContext,
+        userProfile: undefined,
+        isAuthResolved: true,
+      }));
+      return null;
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -216,45 +265,20 @@ export default function AppContextProvider({ children }) {
       }
 
       try {
-        const res = await fetch(
-          "https://service.yolofootball.com/api/users/profile",
-          {
-            method: "GET",
-            headers: {
-              Authorization: accessToken,
-            },
-          }
-        );
-        const data = await res.json();
+        if (!isMounted) {
+          return;
+        }
+
+        const userProfile = await refreshUserProfile({ accessToken });
 
         if (!isMounted) {
           return;
         }
 
-        if (data && data.message === "succeed") {
+        if (userProfile) {
           await refreshNotificationState({ accessToken });
-          setAppContext((currentContext) => ({
-            ...currentContext,
-            userProfile: normalizeUserProfile(data.userProfile),
-            isAuthResolved: true,
-          }));
-        } else if (data && data.message === "unauth") {
-          clearNotificationState();
-          setAppContext((currentContext) => ({
-            ...currentContext,
-            userProfile: undefined,
-            isAuthResolved: true,
-          }));
-        } else if (isMounted) {
-          clearNotificationState();
-          setAppContext((currentContext) => ({
-            ...currentContext,
-            userProfile: undefined,
-            isAuthResolved: true,
-          }));
         }
       } catch (error) {
-        console.error("Failed to load user profile", error);
         if (isMounted) {
           clearNotificationState();
           setAppContext((currentContext) => ({
@@ -309,6 +333,7 @@ export default function AppContextProvider({ children }) {
         refreshUnreadNotificationCount,
         markNotificationRead,
         markAllNotificationsRead,
+        refreshUserProfile,
       }}
     >
       {children}

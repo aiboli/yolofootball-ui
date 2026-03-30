@@ -137,6 +137,16 @@ const getOrderSubtitle = (order) => {
   return `Order id: ${order?.id || "Unavailable"}`;
 };
 
+const getOrderSourceSummary = (order) => {
+  if (order?.orderSource === "custom_event") {
+    return order?.counterpartyUserName
+      ? `Custom odd vs ${order.counterpartyUserName}`
+      : "Custom odd";
+  }
+
+  return order?.orderType === "accumulator" ? "Accumulator" : "Standard odd";
+};
+
 const getEventSubtitle = (event) => {
   if (event?.fixture?.league?.name && event?.fixture?.date) {
     return `${event.fixture.league.name} | Kickoff ${formatDateTime(event.fixture.date)}`;
@@ -531,6 +541,7 @@ function UserDashboard() {
                           </span>
                         </div>
                         <p className={styles.activityDetail}>
+                          {getOrderSourceSummary(order)} |{" "}
                           Stake {formatCurrency(order.stake)} | Potential{" "}
                           {formatCurrency(order.winReturn)}
                           {order.settledWinReturn !== null
@@ -569,8 +580,18 @@ function UserDashboard() {
                         </div>
                         <p className={styles.activityDetail}>{getOddSummary(event.oddData)}</p>
                         <p className={styles.activityDetail}>
+                          Reserved {formatCurrency(event.poolFund)} | Remaining{" "}
+                          {formatCurrency(event.remainingLiability)} | Bets {event.betCount}
+                        </p>
+                        <p className={styles.activityDetail}>
                           Orders linked {event.associatedOrderIds.length} | Created{" "}
                           {formatDateTime(event.createdDate)}
+                          {event.settlementSummary?.owner_credit !== undefined &&
+                          event.settlementSummary?.owner_credit !== null
+                            ? ` | Owner credit ${formatCurrency(
+                                event.settlementSummary.owner_credit
+                              )}`
+                            : ""}
                         </p>
                         {isCustomEventCancelable(event) && (
                           <div className={styles.activityActionRow}>
