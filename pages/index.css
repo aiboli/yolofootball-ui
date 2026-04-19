@@ -1,3 +1,7 @@
+:root {
+  --font-sans: "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
 h1,
 h2,
 h3,
@@ -5,7 +9,6 @@ h4,
 h5,
 p,
 span {
-  font-family: "Roboto", serif;
   margin: 0;
 }
 
@@ -21,6 +24,22 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   background-color: #050a10;
+  font-family: var(--font-sans);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 body,
