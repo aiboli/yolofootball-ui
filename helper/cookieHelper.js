@@ -1,3 +1,5 @@
+export const ACCESS_TOKEN_COOKIE_DAYS = 1;
+
 export function setCookie(name, value, days) {
   var expires = "";
   if (days) {

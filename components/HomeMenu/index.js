@@ -18,6 +18,8 @@ function HomeMenu() {
   const menuRef = useRef(null);
   const unreadNotificationCount = Number(appContext.unreadNotificationCount || 0);
   const userBalance = formatBalance(appContext.userProfile?.userBalance);
+  const isAuthenticated = !!appContext.userProfile?.userName;
+  const shouldShowGuestLinks = appContext.isAuthResolved && !isAuthenticated;
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -81,7 +83,7 @@ function HomeMenu() {
 
   return (
     <div className={styles.homemenu} ref={menuRef}>
-      {appContext.userProfile?.userName && (
+      {isAuthenticated && (
         <a
           href="/user"
           className={styles.balancePill}
@@ -96,7 +98,7 @@ function HomeMenu() {
           <strong className={styles.balanceValue}>{userBalance}</strong>
         </a>
       )}
-      {appContext.userProfile?.userName && (
+      {isAuthenticated && (
         <a
           href="/notifications"
           className={styles.notificationButton}
@@ -147,7 +149,7 @@ function HomeMenu() {
         className={`${styles.listcontainer} ${isMenuOpen ? styles.listcontainerOpen : ""}`}
         id="home-navigation-menu"
       >
-        {appContext.userProfile?.userName && (
+        {isAuthenticated && (
           <li className={`${styles.list} ${styles.balanceListItem}`}>
             <a
               href="/user"
@@ -177,21 +179,21 @@ function HomeMenu() {
             <h4>About</h4>
           </a>
         </li>
-        {appContext.userProfile && appContext.userProfile.userName && (
+        {isAuthenticated && (
           <li className={`${styles.list} ${styles.username}`}>
             <a href="/user" onClick={closeMenu}>
               <h4>{appContext.userProfile.userName}</h4>
             </a>
           </li>
         )}
-        {appContext.userProfile && appContext.userProfile.userName && (
+        {isAuthenticated && (
           <li className={`${styles.list} ${styles.username}`}>
             <a href="/" onClick={signOut}>
               <h4>sign out</h4>
             </a>
           </li>
         )}
-        {!appContext.userProfile && (
+        {shouldShowGuestLinks && (
           <li className={styles.list}>
             <a
               href="/login"
@@ -205,7 +207,7 @@ function HomeMenu() {
             </a>
           </li>
         )}
-        {!appContext.userProfile && (
+        {shouldShowGuestLinks && (
           <li className={styles.list}>
             <a
               href="/signup"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AppContext from "./AppContext";
-import { getCookie } from "./cookieHelper";
+import { eraseCookie, getCookie } from "./cookieHelper";
 import normalizeUserProfile from "./normalizeUserProfile";
 import { readJsonSafely } from "./apiResponse";
 
@@ -226,6 +226,10 @@ export default function AppContextProvider({ children }) {
           isAuthResolved: true,
         }));
         return data.userProfile;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        eraseCookie("access_token");
       }
 
       clearNotificationState();

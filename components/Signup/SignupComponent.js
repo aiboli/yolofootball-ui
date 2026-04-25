@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { setCookie } from "../../helper/cookieHelper";
+import { ACCESS_TOKEN_COOKIE_DAYS, setCookie } from "../../helper/cookieHelper";
 import AppContext from "../../helper/AppContext";
 import styles from "./SignupComponent.module.css";
 import normalizeUserProfile from "../../helper/normalizeUserProfile";
@@ -60,7 +60,7 @@ const SignupComponent = () => {
       });
       const data = await readJsonSafely(res);
       if (data?.message === "succeed") {
-        setCookie("access_token", data.accessToken, 7);
+        setCookie("access_token", data.accessToken, ACCESS_TOKEN_COOKIE_DAYS);
         setAppContext((currentContext) => ({
           ...currentContext,
           userProfile: normalizeUserProfile(data.userProfile),
